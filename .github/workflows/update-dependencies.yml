@@ -1,0 +1,25 @@
+name: Renovate
+on:
+  schedule:
+    - cron: "0 0 * * *"
+
+  workflow_dispatch:
+jobs:
+  renovate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      # Note: Renovate runs within it's own docker container and doesn't
+      # know really anything about which version of tooling are in use e.g. pnpm
+      # it just uses the latest version. This could potentially cause issues if
+      # a new major version of pnpm gets released, so we have a constraint in
+      # the renovate-config.js file to restrict it to use v6 to align with us.
+      - name: Self-hosted Renovate
+        uses: renovatebot/github-action@v39.0.1
+        with:
+          configurationFile: renovate-config.js
+          token: ${{ secrets.RENOVATE_GITHUB_TOKEN }}
+        env:
+          LOG_LEVEL: debug
