@@ -1,0 +1,6 @@
+name: Login
+description: Login to your Octopus Server
+author: Octopus Deploy
+runs:
+  using: node16
+  main: dist/index.js
