@@ -1,0 +1,25 @@
+name: Test login
+on:
+  workflow_dispatch:
+    inputs:
+      server:
+        type: string
+        description: The url of the Octopus Instance
+        required: true
+      service_account_id:
+        type: string
+        description: The id of the service account to login for
+        required: true
+
+jobs:
+  login:
+    runs-on: ubuntu-latest
+    name: Test login to Octopus
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Login to Octopus
+        uses: ./
+        with:
+          server: ${{ inputs.server }}
+          service_account_id: ${{ inputs.service_account_id }}

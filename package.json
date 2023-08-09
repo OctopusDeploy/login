@@ -44,7 +44,8 @@
     "typescript": "^5.1.6"
   },
   "dependencies": {
-    "@actions/core": "^1.10.0"
+    "@actions/core": "^1.10.0",
+    "node-fetch": "^3.3.2"
   },
   "engines": {
     "node": "^16.0.0",

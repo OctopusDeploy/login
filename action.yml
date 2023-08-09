@@ -4,3 +4,11 @@ author: Octopus Deploy
 runs:
   using: node16
   main: dist/index.js
+inputs:
+  server:
+    description: The instance URL hosting Octopus Deploy (i.e. "https://octopus.example.com/").
+    required: true
+  service_account_id:
+    description: The id of the service account when using OpenID Connect to login. It is strongly recommended that this value retrieved from a GitHub secret.
+  api_key:
+    description: The key when using API key login. It is strongly recommended that this value retrieved from a GitHub secret.
