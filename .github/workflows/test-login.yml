@@ -13,6 +13,8 @@ on:
 
 jobs:
   login:
+    permissions:
+      id-token: write
     runs-on: ubuntu-latest
     name: Test login to Octopus
     steps:
