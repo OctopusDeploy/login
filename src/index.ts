@@ -74,7 +74,13 @@ async function login() {
             subject_token_type: TokenExchangeSubjectTokenType,
         };
 
-        const tokenExchangeResponse = await fetch(tokenUrl, { method: "POST", body: tokenExchangeBody });
+        const tokenExchangeResponse = await fetch(tokenUrl, {
+            method: "POST",
+            body: tokenExchangeBody,
+            headers: {
+                "Content-Type": "application/json",
+            },
+        });
 
         // TODO: Proper error handling
         if (!tokenExchangeResponse.ok) throw new Error(tokenExchangeResponse.statusText);
