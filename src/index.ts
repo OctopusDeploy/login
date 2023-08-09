@@ -1,4 +1,4 @@
-import { info, getInput, setFailed, exportVariable, debug, getIDToken, error } from "@actions/core";
+import { info, getInput, setFailed, exportVariable, getIDToken, error } from "@actions/core";
 import { EOL } from "os";
 import fetch from "node-fetch";
 
@@ -74,13 +74,9 @@ async function login() {
             subject_token_type: TokenExchangeSubjectTokenType,
         };
 
-        const body = JSON.stringify(tokenExchangeBody);
-
-        info(`Sending token exchange request to '${tokenUrl}' with body '${body}'`);
-
         const tokenExchangeResponse = await fetch(tokenUrl, {
             method: "POST",
-            body: body,
+            body: JSON.stringify(tokenExchangeBody),
             headers: {
                 "Content-Type": "application/json",
             },
