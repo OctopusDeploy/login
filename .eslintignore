@@ -1,0 +1,9 @@
+node_modules/*
+**/package.json
+**/dist/**/*
+**/coverage/*
+renovate-config.js
+find-and-replace-all/index.js
+extract-package-details/index.js
+add-changeset/index.js
+current-branch-name/index.js
