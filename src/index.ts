@@ -53,7 +53,7 @@ async function login() {
         // TODO: Discover the token endpoint using `.well-known/openid-configuration`
         info(`Logging in with OpenID Connect to '${inputs.server}' using service account '${inputs.serviceAccountId}'`);
 
-        debug(`Obtaining OIDC token from GitHub for service account '${inputs.serviceAccountId}'`);
+        info(`Obtaining OIDC token from GitHub for service account '${inputs.serviceAccountId}'`);
 
         let oidcToken: string | undefined = undefined;
 
@@ -64,7 +64,7 @@ async function login() {
             throw err;
         }
 
-        debug(`Exchanging GitHub OIDC token for access token at '${inputs.server}' for service account '${inputs.serviceAccountId}'`);
+        info(`Exchanging GitHub OIDC token for access token at '${inputs.server}' for service account '${inputs.serviceAccountId}'`);
 
         const tokenUrl = `${inputs.server}/token/v1`;
         const tokenExchangeBody: ExchangeOidcTokenCommand = {
