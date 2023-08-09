@@ -83,7 +83,7 @@ async function login() {
         });
 
         // TODO: Proper error handling
-        if (!tokenExchangeResponse.ok) throw new Error(tokenExchangeResponse.statusText);
+        if (!tokenExchangeResponse.ok) throw new Error(JSON.stringify(await tokenExchangeResponse.json()));
 
         // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
         const responseBody: ExchangeOidcTokenResponse = (await tokenExchangeResponse.json()) as ExchangeOidcTokenResponse;
