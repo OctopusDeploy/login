@@ -22,7 +22,13 @@ jobs:
       - uses: actions/checkout@v3
 
       - name: Login to Octopus
+        id: login
         uses: ./
         with:
           server: ${{ inputs.server }}
           service_account_id: ${{ inputs.service_account_id }}
+
+      - name: Print Octopus credential environment variables
+        run: |
+          echo "OCTOPUS_URL = $OCTOPUS_URL"
+          echo "OCTOPUS_ACCESS_TOKEN = $OCTOPUS_ACCESS_TOKEN"

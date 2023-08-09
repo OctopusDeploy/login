@@ -12,3 +12,6 @@ inputs:
     description: The id of the service account when using OpenID Connect to login. It is strongly recommended that this value retrieved from a GitHub secret.
   api_key:
     description: The key when using API key login. It is strongly recommended that this value retrieved from a GitHub secret.
+outputs:
+  access_token:
+    description: The access token obtained for the service account when using OpenID Connect to login. This token will be place into the OCTOPUS_ACCESS_TOKEN environment variable as well.

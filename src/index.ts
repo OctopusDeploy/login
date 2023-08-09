@@ -1,4 +1,4 @@
-import { info, getInput, setFailed, exportVariable, getIDToken, error } from "@actions/core";
+import { info, getInput, setFailed, exportVariable, getIDToken, error, setOutput } from "@actions/core";
 import { EOL } from "os";
 import fetch from "node-fetch";
 
@@ -92,6 +92,7 @@ async function login() {
 
         exportVariable(EnvironmentVariables.URL, inputs.server);
         exportVariable(EnvironmentVariables.AccessToken, responseBody.access_token);
+        setOutput("access_token", responseBody.access_token);
     } else if (inputs.apiKey) {
         // Set the OCTOPUS_URL and OCTOPUS_API_KEY environment variables so that future steps can use them
         info(`Configuring environment to use API Key for '${inputs.server}'`);
