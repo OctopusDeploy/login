@@ -1,4 +1,4 @@
-import { info, getInput, setFailed, exportVariable, summary, debug, getIDToken, error } from "@actions/core";
+import { info, getInput, setFailed, exportVariable, debug, getIDToken, error } from "@actions/core";
 import { EOL } from "os";
 import fetch from "node-fetch";
 
@@ -93,11 +93,9 @@ async function login() {
         exportVariable(EnvironmentVariables.ApiKey, inputs.apiKey);
     }
 
-    await summary
-        .addRaw(
-            `🐙 Login successful, your GitHub actions environment has been configured to allow access to your Octopus Instance via the API without needing to supply credentials. Happy deployments!`
-        )
-        .write();
+    info(
+        `🐙 Login successful, your GitHub actions environment has been configured to allow access to your Octopus Instance via the API without needing to supply credentials. Happy deployments!`
+    );
 }
 
 login().catch((error) => {
