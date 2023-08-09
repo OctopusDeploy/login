@@ -14,7 +14,8 @@ on:
 jobs:
   login:
     permissions:
-      id-token: write
+      id-token: write # This is required for requesting the JWT
+      contents: read # This is required for actions/checkout
     runs-on: ubuntu-latest
     name: Test login to Octopus
     steps:
