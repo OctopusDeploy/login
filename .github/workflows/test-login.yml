@@ -1,6 +1,5 @@
 name: Test login
 on:
-  pull_request:
   workflow_dispatch:
     inputs:
       server:
@@ -19,8 +18,8 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      # - name: Login to Octopus
-      #   uses: ./
-      #   with:
-      #     server: ${{ inputs.server }}
-      #     service_account_id: ${{ inputs.service_account_id }}
+      - name: Login to Octopus
+        uses: ./
+        with:
+          server: ${{ inputs.server }}
+          service_account_id: ${{ inputs.service_account_id }}
