@@ -74,9 +74,13 @@ async function login() {
             subject_token_type: TokenExchangeSubjectTokenType,
         };
 
+        const body = JSON.stringify(tokenExchangeBody);
+
+        info(`Sending token exchange request to '${tokenUrl}' with body '${body}'`);
+
         const tokenExchangeResponse = await fetch(tokenUrl, {
             method: "POST",
-            body: JSON.stringify(tokenExchangeBody),
+            body: body,
             headers: {
                 "Content-Type": "application/json",
             },
