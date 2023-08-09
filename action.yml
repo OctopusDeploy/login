@@ -6,12 +6,16 @@ runs:
   main: dist/index.js
 inputs:
   server:
-    description: The instance URL hosting Octopus Deploy (i.e. "https://octopus.example.com/").
+    description: The URL of the Octopus Instance (e.g. "https://octopus.example.com/").
     required: true
   service_account_id:
     description: The id of the service account when using OpenID Connect to login. It is strongly recommended that this value retrieved from a GitHub secret.
   api_key:
     description: The key when using API key login. It is strongly recommended that this value retrieved from a GitHub secret.
 outputs:
+  server:
+    description: The URL of the Octopus Instance that has been logged into (e.g. "https://octopus.example.com/"). This will be placed into the OCTOPUS_URL environment variable as well.
   access_token:
-    description: The access token obtained for the service account when using OpenID Connect to login. This token will be place into the OCTOPUS_ACCESS_TOKEN environment variable as well.
+    description: The access token obtained for the service account when using OpenID Connect to login. This will be place into the OCTOPUS_ACCESS_TOKEN environment variable as well.
+  api_key:
+    description: The API key configured for access when using API key login. This will be placed into the OCTOPUS_API_KEY environment variable as well.

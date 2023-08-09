@@ -50,28 +50,32 @@ export async function login({ getInput, info, getIDToken, error, exportVariable,
     if (!inputs.serviceAccountId && !inputs.apiKey)
         errors.push("A Service Account Id or API Key is required. Please specify using either the 'service_account_id' or 'api_key' inputs.");
 
+    if (inputs.serviceAccountId && inputs.apiKey) errors.push("Only one of Service Account Id or API Key can be supplied.");
+
     if (errors.length > 0) {
         throw new Error(errors.join(EOL));
     }
 
     if (inputs.serviceAccountId) {
-        // TODO: Discover the token endpoint using `.well-known/openid-configuration`
         info(`Logging in with OpenID Connect to '${inputs.server}' using service account '${inputs.serviceAccountId}'`);
 
-        info(`Obtaining OIDC token from GitHub for service account '${inputs.serviceAccountId}'`);
+        info(`Obtaining GitHub OIDC token for service account '${inputs.serviceAccountId}'`);
 
         let oidcToken: string | undefined = undefined;
 
         try {
             oidcToken = await getIDToken(inputs.serviceAccountId);
         } catch (err) {
-            error(`Please make sure to give write permissions to id-token in the workflow.`);
+            error(`Unable to obtain an ID token from GitHub, please make sure to give write permissions to id-token in the workflow.`);
             throw err;
         }
 
         info(`Exchanging GitHub OIDC token for access token at '${inputs.server}' for service account '${inputs.serviceAccountId}'`);
 
-        const tokenUrl = `${inputs.server}/token/v1`;
+        const trimmedServerUrl = inputs.server?.endsWith("/") ? inputs.server.substring(0, inputs.server.length) : inputs.server;
+
+        // TODO: Discover the token endpoint using `.well-known/openid-configuration`
+        const tokenUrl = `${trimmedServerUrl}/token/v1`;
         const tokenExchangeBody: ExchangeOidcTokenCommand = {
             grant_type: TokenExchangeGrantType,
             audience: inputs.serviceAccountId,
@@ -87,7 +91,6 @@ export async function login({ getInput, info, getIDToken, error, exportVariable,
             },
         });
 
-        // TODO: Proper error handling
         if (!tokenExchangeResponse.ok) {
             // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
             const errorBody: ExchangeOidcTokenErrorResponse = (await tokenExchangeResponse.json()) as ExchangeOidcTokenErrorResponse;
@@ -107,7 +110,10 @@ export async function login({ getInput, info, getIDToken, error, exportVariable,
         info(`Configuring environment to use API Key for '${inputs.server}'`);
         exportVariable(EnvironmentVariables.URL, inputs.server);
         exportVariable(EnvironmentVariables.ApiKey, inputs.apiKey);
+        setOutput("api_key", inputs.apiKey);
     }
+
+    setOutput("server", inputs.server);
 
     info(
         `🐙 Login successful, your GitHub actions environment has been configured to allow access to your Octopus Instance via the API without needing to supply credentials. Happy deployments!`

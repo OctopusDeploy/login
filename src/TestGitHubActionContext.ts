@@ -1,11 +1,13 @@
 import { GitHubActionsContext, InputOptions } from "./GitHubActionsContext";
 
+type GetIDTokenFactory = (aud?: string) => Promise<string>;
+
 export class TestGitHubActionContext implements GitHubActionsContext {
     inputs: Record<string, string> = {};
     outputs: Record<string, unknown> = {};
     exportedVariables: Record<string, unknown> = {};
     failureMessage: string | undefined;
-    idToken: string | undefined;
+    idTokenFactory: GetIDTokenFactory | undefined;
 
     addInput(name: string, value: string) {
         this.inputs[name] = value;
@@ -19,8 +21,8 @@ export class TestGitHubActionContext implements GitHubActionsContext {
         return this.failureMessage;
     }
 
-    setIDToken(token: string) {
-        this.idToken = token;
+    setIDToken(factory: GetIDTokenFactory) {
+        this.idTokenFactory = factory;
     }
 
     getInput(name: string, options?: InputOptions): string {
@@ -54,6 +56,7 @@ export class TestGitHubActionContext implements GitHubActionsContext {
     }
 
     async getIDToken(aud?: string | undefined) {
-        return this.idToken ?? "";
+        if (this.idTokenFactory === undefined) throw new Error("No id token factory method set, please use setIDToken to configure");
+        return this.idTokenFactory(aud);
     }
 }

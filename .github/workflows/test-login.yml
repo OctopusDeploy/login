@@ -10,6 +10,10 @@ on:
         type: string
         description: The id of the service account to login for
         required: true
+      api_key:
+        type: string
+        description: The API key to login with
+        required: true
 
 jobs:
   login:
@@ -21,14 +25,34 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Login to Octopus
-        id: login
+      - name: Login to Octopus using OIDC
         uses: ./
+        id: oidc
         with:
           server: ${{ inputs.server }}
           service_account_id: ${{ inputs.service_account_id }}
 
-      - name: Print Octopus credential environment variables
+      - name: Print Octopus credential environment variables from OIDC login
         run: |
           echo "OCTOPUS_URL = $OCTOPUS_URL"
           echo "OCTOPUS_ACCESS_TOKEN = $OCTOPUS_ACCESS_TOKEN"
+          echo "server = ${{ steps.oidc.outputs.server }}"
+          echo "access_token = ${{ steps.oidc.outputs.access_token }}"
+
+      - name: Login to Octopus using API Key
+        uses: ./
+        id: api_key
+        with:
+          server: ${{ inputs.server }}
+          api_key: ${{ inputs.api_key }}
+
+      - name: Print Octopus credential environment variables from API Key login
+        run: |
+          echo "OCTOPUS_URL = $OCTOPUS_URL"
+          echo "server = ${{ steps.api_key.outputs.server }}"
+
+      - name: Install Octopus CLI
+        uses: OctopusDeploy/install-octopus-cli-action@v3
+
+      - name: List environments using CLI
+        run: octopus environment list
