@@ -55,4 +55,4 @@ jobs:
         uses: OctopusDeploy/install-octopus-cli-action@v3
 
       - name: List environments using CLI
-        run: octopus environment list
+        run: octopus environment list --space Default
