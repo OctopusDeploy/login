@@ -18,7 +18,7 @@ jobs:
       pull-requests: write
       contents: write
 
-    # For all pushes to main that do not have a commit message that starts with Version Packages, and thus aren"t merging a versioning PR
+    # For all pushes to main that do not have a commit message that starts with Version Packages, and thus aren't merging a versioning PR
     # Run the changesets action, which will either no-op if there are no changesets present,
     # or generate the Version Packages PR containing the updated version and merged release notes if there are changesets present
     if: ${{ !startsWith(github.event.commits[0].message, 'Version Packages') }}
