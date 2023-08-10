@@ -1,6 +1,6 @@
 import { EOL } from "os";
 import fetch from "node-fetch";
-import { GitHubActionsContext } from "GitHubActionsContext";
+import type { GitHubActionsContext } from "./GitHubActionsContext";
 
 export type InputParameters = {
     server?: string;

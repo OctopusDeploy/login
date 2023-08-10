@@ -1,5 +1,5 @@
 import { getInput, setOutput, setFailed, info, exportVariable, getIDToken, error, debug } from "@actions/core";
-import { GitHubActionsContext, InputOptions } from "./GitHubActionsContext";
+import type { GitHubActionsContext, InputOptions } from "./GitHubActionsContext";
 
 export class GitHubActionsContextImpl implements GitHubActionsContext {
     error(message: string) {
@@ -13,6 +13,7 @@ export class GitHubActionsContextImpl implements GitHubActionsContext {
     exportVariable(name: string, val: unknown) {
         exportVariable(name, val);
     }
+
     getIDToken(aud?: string | undefined): Promise<string> {
         return getIDToken(aud);
     }
