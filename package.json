@@ -5,6 +5,9 @@
   "main": "src/index.ts",
   "scripts": {
     "build": "esbuild src/index.ts --bundle --platform=node --target=node16 --minify --outdir=./dist",
+    "changeset": "changeset",
+    "ci:publish": "npm run changeset tag",
+    "ci:version": "npm run changeset version",
     "lint:fix": "eslint . --fix",
     "lint": "eslint . --no-error-on-unmatched-pattern",
     "test": "jest"
@@ -25,6 +28,7 @@
   },
   "homepage": "https://github.com/OctopusDeploy/login#readme",
   "devDependencies": {
+    "@changesets/cli": "2.26.2",
     "@types/jest": "29.5.3",
     "@types/node": "16.18.40",
     "@types/node-fetch": "2.6.4",
