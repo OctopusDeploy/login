@@ -31,6 +31,7 @@ To login using an API Key:
 
 ```yaml
 - name: Login to Octopus
+  uses: OctopusDeploy/login@v0
   with:
       server: https://my.octopus.app
       api_key: ${{ secrets.OCTOPUS_API_KEY }}
@@ -69,6 +70,7 @@ To login using OIDC:
 
 ```yaml
 - name: Login to Octopus
+  uses: OctopusDeploy/login@v0
   with:
       server: https://my.octopus.app
       service_account_id: 5be4ac10-2679-4041-a8b0-7b05b445e19e
