@@ -1,0 +1,13 @@
+{
+  "extends": "./tsconfig.base.json",
+  "compilerOptions": {
+    "target": "ES5",
+    "esModuleInterop": true,
+    "module": "CommonJS",
+    "lib": ["es2015"],
+    "strict": true,
+    "allowJs": true
+  },
+  "include": ["src/**/*.spec.ts", "src/**/__tests__/**/*.ts"],
+  "exclude": ["node_modules", "dist"]
+}

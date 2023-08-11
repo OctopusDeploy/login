@@ -36,11 +36,11 @@ export type ExchangeOidcTokenErrorResponse = {
 export const TokenExchangeGrantType = "urn:ietf:params:oauth:grant-type:token-exchange";
 export const TokenExchangeSubjectTokenType = "urn:ietf:params:oauth:token-type:jwt";
 
-export async function login({ getInput, info, getIDToken, error, exportVariable, setOutput }: GitHubActionsContext) {
+export async function login(context: GitHubActionsContext) {
     const inputs: InputParameters = {
-        server: getInput("server"),
-        serviceAccountId: getInput("service_account_id"),
-        apiKey: getInput("api_key"),
+        server: context.getInput("server", { required: true }),
+        serviceAccountId: context.getInput("service_account_id"),
+        apiKey: context.getInput("api_key"),
     };
 
     const errors: string[] = [];
@@ -57,20 +57,20 @@ export async function login({ getInput, info, getIDToken, error, exportVariable,
     }
 
     if (inputs.serviceAccountId) {
-        info(`Logging in with OpenID Connect to '${inputs.server}' using service account '${inputs.serviceAccountId}'`);
+        context.info(`Logging in with OpenID Connect to '${inputs.server}' using service account '${inputs.serviceAccountId}'`);
 
-        info(`Obtaining GitHub OIDC token for service account '${inputs.serviceAccountId}'`);
+        context.info(`Obtaining GitHub OIDC token for service account '${inputs.serviceAccountId}'`);
 
         let oidcToken: string | undefined = undefined;
 
         try {
-            oidcToken = await getIDToken(inputs.serviceAccountId);
+            oidcToken = await context.getIDToken(inputs.serviceAccountId);
         } catch (err) {
-            error(`Unable to obtain an ID token from GitHub, please make sure to give write permissions to id-token in the workflow.`);
+            context.error(`Unable to obtain an ID token from GitHub, please make sure to give write permissions to id-token in the workflow.`);
             throw err;
         }
 
-        info(`Exchanging GitHub OIDC token for access token at '${inputs.server}' for service account '${inputs.serviceAccountId}'`);
+        context.info(`Exchanging GitHub OIDC token for access token at '${inputs.server}' for service account '${inputs.serviceAccountId}'`);
 
         const trimmedServerUrl = inputs.server?.endsWith("/") ? inputs.server.substring(0, inputs.server.length) : inputs.server;
 
@@ -100,22 +100,22 @@ export async function login({ getInput, info, getIDToken, error, exportVariable,
         // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
         const responseBody: ExchangeOidcTokenResponse = (await tokenExchangeResponse.json()) as ExchangeOidcTokenResponse;
 
-        info(`Configuring environment to use access token for Octopus Instance '${inputs.server}' on behalf of service account '${inputs.serviceAccountId}'`);
+        context.info(
+            `Configuring environment to use access token for Octopus Instance '${inputs.server}' on behalf of service account '${inputs.serviceAccountId}'`
+        );
 
-        exportVariable(EnvironmentVariables.URL, inputs.server);
-        exportVariable(EnvironmentVariables.AccessToken, responseBody.access_token);
-        setOutput("access_token", responseBody.access_token);
+        context.exportVariable(EnvironmentVariables.URL, inputs.server);
+        context.exportVariable(EnvironmentVariables.AccessToken, responseBody.access_token);
+        context.setOutput("access_token", responseBody.access_token);
     } else if (inputs.apiKey) {
         // Set the OCTOPUS_URL and OCTOPUS_API_KEY environment variables so that future steps can use them
-        info(`Configuring environment to use API Key for '${inputs.server}'`);
-        exportVariable(EnvironmentVariables.URL, inputs.server);
-        exportVariable(EnvironmentVariables.ApiKey, inputs.apiKey);
-        setOutput("api_key", inputs.apiKey);
+        context.info(`Configuring environment to use API Key for '${inputs.server}'`);
+        context.exportVariable(EnvironmentVariables.URL, inputs.server);
+        context.exportVariable(EnvironmentVariables.ApiKey, inputs.apiKey);
+        context.setOutput("api_key", inputs.apiKey);
     }
 
-    setOutput("server", inputs.server);
+    context.setOutput("server", inputs.server);
 
-    info(
-        `🐙 Login successful, your GitHub actions environment has been configured to allow access to your Octopus Instance via the API without needing to supply credentials. Happy deployments!`
-    );
+    context.info(`🐙 Login successful, your GitHub actions environment has been configured to access to your Octopus Instance. Happy deployments!`);
 }

@@ -1,4 +1,4 @@
-import { GitHubActionsContext, InputOptions } from "./GitHubActionsContext";
+import type { GitHubActionsContext, InputOptions } from "./GitHubActionsContext";
 
 type GetIDTokenFactory = (aud?: string) => Promise<string>;
 
