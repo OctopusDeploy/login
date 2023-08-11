@@ -12,6 +12,7 @@ export interface GitHubActionsContext {
 
     info: (message: string) => void;
     error: (message: string) => void;
+    warning: (message: string) => void;
     debug: (message: string) => void;
 
     getIDToken: (aud?: string) => Promise<string>;

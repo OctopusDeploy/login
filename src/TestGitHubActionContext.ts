@@ -17,6 +17,10 @@ export class TestGitHubActionContext implements GitHubActionsContext {
         return this.outputs;
     }
 
+    getExportedVariables() {
+        return this.exportedVariables;
+    }
+
     getFailureMessage() {
         return this.failureMessage;
     }
@@ -45,6 +49,10 @@ export class TestGitHubActionContext implements GitHubActionsContext {
 
     error(message: string): void {
         console.error(message);
+    }
+
+    warning(message: string): void {
+        console.warn(message);
     }
 
     debug(message: string): void {

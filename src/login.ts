@@ -38,7 +38,7 @@ export const TokenExchangeSubjectTokenType = "urn:ietf:params:oauth:token-type:j
 
 export async function login(context: GitHubActionsContext) {
     const inputs: InputParameters = {
-        server: context.getInput("server", { required: true }),
+        server: context.getInput("server"),
         serviceAccountId: context.getInput("service_account_id"),
         apiKey: context.getInput("api_key"),
     };
@@ -66,8 +66,8 @@ export async function login(context: GitHubActionsContext) {
         try {
             oidcToken = await context.getIDToken(inputs.serviceAccountId);
         } catch (err) {
-            context.error(`Unable to obtain an ID token from GitHub, please make sure to give write permissions to id-token in the workflow.`);
-            throw err;
+            context.warning("Unable to obtain an ID token from GitHub, please make sure to give write permissions to id-token in the workflow.");
+            throw new Error(err);
         }
 
         context.info(`Exchanging GitHub OIDC token for access token at '${inputs.server}' for service account '${inputs.serviceAccountId}'`);
@@ -117,5 +117,5 @@ export async function login(context: GitHubActionsContext) {
 
     context.setOutput("server", inputs.server);
 
-    context.info(`🐙 Login successful, your GitHub actions environment has been configured to access to your Octopus Instance. Happy deployments!`);
+    context.info(`🐙 Login successful, the GitHub actions environment has been configured to access your Octopus Instance. Happy deployments!`);
 }
