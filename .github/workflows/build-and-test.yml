@@ -9,6 +9,11 @@ jobs:
   build:
     runs-on: ubuntu-latest
     name: Build and test
+    permissions:
+      contents: read
+      actions: write
+      checks: write
+      statuses: write
     steps:
       - uses: actions/checkout@v3
 
