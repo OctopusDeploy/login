@@ -35,12 +35,13 @@ jobs:
         run: npm run ci:test
 
       - name: Create test report
-        uses: dorny/test-reporter@v1
+        uses: phoenix-actions/test-reporting@v12
         if: success() || failure() # run this step even if previous step failed
         with:
           name: Tests # Name of the check run which will be created
           path: test-results/jest-*.xml # Path to test results
           reporter: jest-junit # Format of test results
+          output-to: step-summary
 
       - name: Compare the expected and actual dist/ directories
         run: |
