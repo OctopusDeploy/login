@@ -29,7 +29,7 @@
   "homepage": "https://github.com/OctopusDeploy/login#readme",
   "devDependencies": {
     "@changesets/cli": "2.26.2",
-    "@types/node": "16.18.40",
+    "@types/node": "16.18.41",
     "@typescript-eslint/eslint-plugin": "6.4.0",
     "@typescript-eslint/parser": "6.4.0",
     "esbuild": "0.19.2",
