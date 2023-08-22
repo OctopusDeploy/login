@@ -88,6 +88,7 @@ export async function login(context: GitHubActionsContext) {
             body: JSON.stringify(tokenExchangeBody),
             headers: {
                 "Content-Type": "application/json",
+                "User-Agent": "GitHubActions (login;v0)",
             },
         });
 
