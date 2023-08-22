@@ -134,6 +134,7 @@ async function getOpenIdConfiguration(inputs: InputParameters) {
     const openIdConfigurationResponse = await fetch(openIdConfigurationEndpointUrl, {
         headers: {
             "Content-Type": "application/json",
+            "User-Agent": "GitHubActions (login;v0)",
         },
     });
 
