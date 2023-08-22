@@ -3,7 +3,7 @@ import fetch from "node-fetch";
 import type { GitHubActionsContext } from "./GitHubActionsContext";
 
 export type InputParameters = {
-    server?: string;
+    server: string;
     serviceAccountId?: string;
     apiKey?: string;
 };
@@ -12,6 +12,11 @@ export const EnvironmentVariables = {
     URL: "OCTOPUS_URL",
     ApiKey: "OCTOPUS_API_KEY",
     AccessToken: "OCTOPUS_ACCESS_TOKEN",
+};
+
+export type OpenIdConfiguration = {
+    issuer: string;
+    token_endpoint: string;
 };
 
 export type ExchangeOidcTokenCommand = {
@@ -28,7 +33,7 @@ export type ExchangeOidcTokenResponse = {
     expires_in: string;
 };
 
-export type ExchangeOidcTokenErrorResponse = {
+export type OctopusErrorResponse = {
     ErrorMessage: string;
     Errors: string[];
 };
@@ -72,45 +77,20 @@ export async function login(context: GitHubActionsContext) {
 
         context.info(`Exchanging GitHub OIDC token for access token at '${inputs.server}' for service account '${inputs.serviceAccountId}'`);
 
-        const trimmedServerUrl = inputs.server?.endsWith("/") ? inputs.server.substring(0, inputs.server.length) : inputs.server;
+        const openIdConfiguration = await getOpenIdConfiguration(inputs);
 
-        // TODO: Discover the token endpoint using `.well-known/openid-configuration`
-        const tokenUrl = `${trimmedServerUrl}/token/v1`;
-        const tokenExchangeBody: ExchangeOidcTokenCommand = {
-            grant_type: TokenExchangeGrantType,
-            audience: inputs.serviceAccountId,
-            subject_token: oidcToken,
-            subject_token_type: TokenExchangeSubjectTokenType,
-        };
-
-        const tokenExchangeResponse = await fetch(tokenUrl, {
-            method: "POST",
-            body: JSON.stringify(tokenExchangeBody),
-            headers: {
-                "Content-Type": "application/json",
-                "User-Agent": "GitHubActions (login;v0)",
-            },
-        });
-
-        if (!tokenExchangeResponse.ok) {
-            // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-            const errorBody: ExchangeOidcTokenErrorResponse = (await tokenExchangeResponse.json()) as ExchangeOidcTokenErrorResponse;
-            throw new Error(errorBody.Errors.join(EOL));
-        }
-
-        // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-        const responseBody: ExchangeOidcTokenResponse = (await tokenExchangeResponse.json()) as ExchangeOidcTokenResponse;
+        const exchangeOidcTokenResponse = await exchangeOidcTokenForAccessToken(inputs, oidcToken, openIdConfiguration);
 
         context.info(
             `Configuring environment to use access token for Octopus Instance '${inputs.server}' on behalf of service account '${inputs.serviceAccountId}'`
         );
 
         context.exportVariable(EnvironmentVariables.URL, inputs.server);
-        context.exportVariable(EnvironmentVariables.AccessToken, responseBody.access_token);
-        context.setOutput("access_token", responseBody.access_token);
+        context.exportVariable(EnvironmentVariables.AccessToken, exchangeOidcTokenResponse.access_token);
+        context.setOutput("access_token", exchangeOidcTokenResponse.access_token);
     } else if (inputs.apiKey) {
         // Set the OCTOPUS_URL and OCTOPUS_API_KEY environment variables so that future steps can use them
-        context.info(`Configuring environment to use API Key for '${inputs.server}'`);
+        context.info(`Configuring environment to use API Key for Octopus Instance '${inputs.server}'`);
         context.exportVariable(EnvironmentVariables.URL, inputs.server);
         context.exportVariable(EnvironmentVariables.ApiKey, inputs.apiKey);
         context.setOutput("api_key", inputs.apiKey);
@@ -119,4 +99,54 @@ export async function login(context: GitHubActionsContext) {
     context.setOutput("server", inputs.server);
 
     context.info(`🐙 Login successful, the GitHub actions environment has been configured to access your Octopus Instance. Happy deployments!`);
+}
+
+async function exchangeOidcTokenForAccessToken(inputs: InputParameters, oidcToken: string, openIdConfiguration: OpenIdConfiguration) {
+    const tokenExchangeBody: ExchangeOidcTokenCommand = {
+        grant_type: TokenExchangeGrantType,
+        audience: inputs.serviceAccountId ?? "",
+        subject_token: oidcToken,
+        subject_token_type: TokenExchangeSubjectTokenType,
+    };
+
+    const tokenExchangeResponse = await fetch(openIdConfiguration.token_endpoint, {
+        method: "POST",
+        body: JSON.stringify(tokenExchangeBody),
+        headers: {
+            "Content-Type": "application/json",
+            "User-Agent": "GitHubActions (login;v0)",
+        },
+    });
+
+    if (!tokenExchangeResponse.ok) {
+        // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+        const errorBody: OctopusErrorResponse = (await tokenExchangeResponse.json()) as OctopusErrorResponse;
+        throw new Error(errorBody.Errors.join(EOL));
+    }
+
+    // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+    return (await tokenExchangeResponse.json()) as ExchangeOidcTokenResponse;
+}
+
+async function getOpenIdConfiguration(inputs: InputParameters) {
+    const openIdConfigurationEndpointUrl = `${normalizeServerUrl(inputs.server)}/.well-known/openid-configuration`;
+
+    const openIdConfigurationResponse = await fetch(openIdConfigurationEndpointUrl, {
+        headers: {
+            "Content-Type": "application/json",
+        },
+    });
+
+    if (!openIdConfigurationResponse.ok) {
+        // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+        const errorBody: OctopusErrorResponse = (await openIdConfigurationResponse.json()) as OctopusErrorResponse;
+        throw new Error(errorBody.Errors.join(EOL));
+    }
+
+    // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+    return (await openIdConfigurationResponse.json()) as OpenIdConfiguration;
+}
+
+function normalizeServerUrl(server: string) {
+    return server.endsWith("/") ? server.substring(0, server.length) : server;
 }
