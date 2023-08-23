@@ -49,7 +49,7 @@ To login using OIDC:
 
 -   Create a service account in Octopus with the permissions required.
 -   Configure an OIDC identity that matches the GitHub Actions subject claim for your repository and workflow. See the [GitHub documentation](https://docs.github.com/en/actions/deployment/security-hardening-your-deployments/about-security-hardening-with-openid-connect#defining-trust-conditions-on-cloud-roles-using-oidc-claims) for examples of the subject claim.
--   Copy the `Service Account Id` value from the Octopus service account. This will be a guid.
+-   Copy the `Service Account Id` value from the Octopus service account. This will be a GUID.
 -   Add the `OctopusDeploy/login` action to your workflow, specifying the `server` and `service_account_id` inputs.
 
 ### Inputs
