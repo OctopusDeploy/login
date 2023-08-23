@@ -4,22 +4,54 @@ on:
     inputs:
       server:
         type: string
-        description: The url of the Octopus Instance
-        required: true
+        description: The url of the Octopus Instance. Will default to repository variable TEST_INSTANCE_URL if not supplied.
       service_account_id:
         type: string
-        description: The id of the service account to login for
-        required: true
+        description: The id of the service account to login for. Will default to repository variable TEST_INSTANCE_SERVICE_ACCOUNT_ID if not supplied.
+      api_key:
+        type: string
+        description: The API key to login with. Be careful this may be logged in plain text. Will default to repository secret TEST_INSTANCE_API_KEY if not supplied.
 
 jobs:
   login:
+    permissions:
+      id-token: write # This is required for requesting the JWT
+      contents: read # This is required for actions/checkout
     runs-on: ubuntu-latest
     name: Test login to Octopus
     steps:
       - uses: actions/checkout@v3
 
-      - name: Login to Octopus
+      - name: Login to Octopus using OIDC
         uses: ./
+        id: oidc
         with:
-          server: ${{ inputs.server }}
-          service_account_id: ${{ inputs.service_account_id }}
+          server: ${{ inputs.server || vars.TEST_INSTANCE_URL }}
+          service_account_id: ${{ inputs.service_account_id || vars.TEST_INSTANCE_SERVICE_ACCOUNT_ID }}
+
+      - name: Print Octopus credential environment variables from OIDC login
+        run: |
+          echo "OCTOPUS_URL = $OCTOPUS_URL"
+          echo "OCTOPUS_ACCESS_TOKEN = $OCTOPUS_ACCESS_TOKEN"
+          echo "server = ${{ steps.oidc.outputs.server }}"
+          echo "access_token = ${{ steps.oidc.outputs.access_token }}"
+
+      - name: Login to Octopus using API Key
+        uses: ./
+        id: api_key
+        with:
+          server: ${{ inputs.server || vars.TEST_INSTANCE_URL }}
+          api_key: ${{ inputs.api_key || secrets.TEST_INSTANCE_API_KEY }}
+
+      - name: Print Octopus credential environment variables from API Key login
+        run: |
+          echo "OCTOPUS_URL = $OCTOPUS_URL"
+          echo "OCTOPUS_API_KEY = $OCTOPUS_API_KEY"
+          echo "server = ${{ steps.api_key.outputs.server }}"
+          echo "api_key = ${{ steps.api_key.outputs.api_key }}"
+
+      - name: Install Octopus CLI
+        uses: OctopusDeploy/install-octopus-cli-action@v3
+
+      - name: List environments using CLI
+        run: octopus environment list --space Default

@@ -1,7 +1,8 @@
-import { info } from "@actions/core";
+import { setFailed } from "@actions/core";
+import { GitHubActionsContextImpl } from "./GitHubActionsContextImpl";
+import { login } from "./login";
 
-function login() {
-    info("Hello everyone");
-}
-
-login();
+login(new GitHubActionsContextImpl()).catch((error) => {
+    setFailed(error);
+    process.exit(1);
+});
