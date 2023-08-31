@@ -2,7 +2,6 @@ name: Add changeset to renovate created PRs
 
 on:
   pull_request:
-    types: [opened, synchronize, reopened]
     branches: [main]
 
 # Increase the access for the GITHUB_TOKEN
@@ -30,3 +29,8 @@ jobs:
 
       - name: Print changeset contents
         run: cat ${{ steps.add_renovate_changeset.outputs.changesetPath }}
+
+      - name: Commit & Push changes
+        uses: actions-js/push@v1.4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
