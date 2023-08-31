@@ -26,5 +26,5 @@ jobs:
         env:
           LOG_LEVEL: debug
           RENOVATE_DRY_RUN: ${{ inputs.dryRun && 'full' || null }}
-          RENOVATE_BASE_BRANCHES: ${{ github.ref_name }}
+          RENOVATE_BASE_BRANCHES: ${{ github.ref }}
           RENOVATE_USE_BASE_BRANCH_CONFIG: merge
