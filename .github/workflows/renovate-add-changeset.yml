@@ -1,8 +1,8 @@
 name: Add changeset to renovate created PRs
 
 on:
-  pull_request_target:
-    types: [opened, edited, synchronize, reopened]
+  pull_request:
+    types: [opened, synchronize, reopened]
     branches: [main]
 
 # Increase the access for the GITHUB_TOKEN
