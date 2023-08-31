@@ -25,8 +25,8 @@ module.exports = {
     requireConfig: false,
     allowedPostUpgradeCommands: [".*"],
     postUpgradeTasks: {
-        commands: ["npm install && npm run build"],
-        fileFilters: ["**/index.js"],
+        commands: ["npm install && npm run build && npm run create-dependency-update-changeset -- {{{depName}}} {{{currentVersion}}} {{{newVersion}}}"],
+        fileFilters: ["**/index.js", "**/.changeset/*"],
         executionMode: "update",
     },
 };
