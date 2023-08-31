@@ -24,7 +24,7 @@ test("Login with API Key sets correct environment variables and output", async (
     });
 });
 
-test("Successful login with OIDC sets correct environment variables and output", async () => {
+test("Successful login with OIDC sets correct environment variables, outputs and masks the access token", async () => {
     const context = new TestGitHubActionContext();
     const serverUrl = "https://my.octopus.app";
     const serviceAccountId = "my-service-account-id";
@@ -70,6 +70,8 @@ test("Successful login with OIDC sets correct environment variables and output",
             server: serverUrl,
             access_token: accessToken,
         });
+
+        expect(context.getSecrets()).toEqual([accessToken]);
     } finally {
         server.close();
     }

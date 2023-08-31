@@ -7,6 +7,7 @@ export interface GitHubActionsContext {
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     setOutput: (name: string, value: any) => void;
+    setSecret: (secret: string) => void;
     setFailed: (message: string) => void;
     exportVariable: (name: string, val: unknown) => void;
 
