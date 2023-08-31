@@ -9,12 +9,12 @@ on:
 permissions:
   # This Allows the GITHUB_TOKEN to add to pull requests
   contents: write
+  pull-requests: write
 
 jobs:
   add_changeset:
     runs-on: ubuntu-latest
     name: Add changeset
-    # if: ${{ (github.actor == 'Octobob') && (contains(github.head_ref, 'renovate')) }}
     steps:
       - name: Add pre-release changeset
         id: add_pre_release_changeset
