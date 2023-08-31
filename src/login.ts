@@ -85,6 +85,9 @@ export async function login(context: GitHubActionsContext) {
             `Configuring environment to use access token for Octopus Instance '${inputs.server}' on behalf of service account '${inputs.serviceAccountId}'`
         );
 
+        const secretValue = "mysecretvalue";
+        context.setSecret(secretValue);
+
         // Set the value as a secret so we can be 100% sure its masked in any logs
         context.setSecret(exchangeOidcTokenResponse.access_token);
 
