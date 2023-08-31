@@ -16,8 +16,8 @@ jobs:
     runs-on: ubuntu-latest
     name: Add changeset
     steps:
-      - name: Add pre-release changeset
-        id: add_pre_release_changeset
+      - name: Add renovate changeset
+        id: add_renovate_changeset
         uses: OctopusDeploy/util-actions/add-changeset@add-changeset.0.2.0
         with:
           type: patch
@@ -25,3 +25,6 @@ jobs:
           ignore: |
             **/node_modules/**/*
           filter: "@octopusdeploy"
+
+      - name: Print changeset contents
+        run: cat ${{ steps.add_renovate_changeset.outputs.changesetPath }}
