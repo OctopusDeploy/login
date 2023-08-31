@@ -1,4 +1,4 @@
-import { getInput, setOutput, setFailed, info, exportVariable, getIDToken, error, debug, warning } from "@actions/core";
+import { getInput, setOutput, setFailed, info, exportVariable, getIDToken, error, debug, warning, setSecret } from "@actions/core";
 import type { GitHubActionsContext, InputOptions } from "./GitHubActionsContext";
 
 export class GitHubActionsContextImpl implements GitHubActionsContext {
@@ -24,6 +24,10 @@ export class GitHubActionsContextImpl implements GitHubActionsContext {
 
     setOutput(name: string, value: unknown): void {
         return setOutput(name, value);
+    }
+
+    setSecret(secret: string): void {
+        return setSecret(secret);
     }
 
     setFailed(message: string): void {

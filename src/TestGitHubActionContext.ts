@@ -5,6 +5,7 @@ type GetIDTokenFactory = (aud?: string) => Promise<string>;
 export class TestGitHubActionContext implements GitHubActionsContext {
     inputs: Record<string, string> = {};
     outputs: Record<string, unknown> = {};
+    secrets: string[] = [];
     exportedVariables: Record<string, unknown> = {};
     failureMessage: string | undefined;
     idTokenFactory: GetIDTokenFactory | undefined;
@@ -15,6 +16,10 @@ export class TestGitHubActionContext implements GitHubActionsContext {
 
     getOutputs() {
         return this.outputs;
+    }
+
+    getSecrets() {
+        return this.secrets;
     }
 
     getExportedVariables() {
@@ -37,6 +42,10 @@ export class TestGitHubActionContext implements GitHubActionsContext {
 
     setOutput(name: string, value: unknown): void {
         this.outputs[name] = value;
+    }
+
+    setSecret(secret: string): void {
+        this.secrets.push(secret);
     }
 
     setFailed(message: string): void {
