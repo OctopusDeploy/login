@@ -24,7 +24,6 @@ jobs:
           summary: ${{ github.event.pull_request.title }}
           ignore: |
             **/node_modules/**/*
-          filter: "@octopusdeploy"
 
       - name: Print changeset contents
         run: cat ${{ steps.add_renovate_changeset.outputs.changesetPath }}
