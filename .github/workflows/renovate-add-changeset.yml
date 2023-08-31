@@ -17,6 +17,8 @@ jobs:
     steps:
       - name: checkout
         uses: actions/checkout@v3.3.0
+        with:
+          fetch-depth: 0
 
       - name: Add renovate changeset
         id: add_renovate_changeset
@@ -33,4 +35,5 @@ jobs:
       - name: Commit & Push changes
         uses: actions-js/push@v1.4
         with:
+          branch: ${{ github.head_ref }}
           github_token: ${{ secrets.GITHUB_TOKEN }}
