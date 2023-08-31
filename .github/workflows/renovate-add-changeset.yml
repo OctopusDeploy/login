@@ -1,0 +1,32 @@
+name: Add changeset to renovate created PRs
+
+on:
+  pull_request_target:
+    branches: [main]
+    paths: ["package.json"]
+
+# Increase the access for the GITHUB_TOKEN
+permissions:
+  # This Allows the GITHUB_TOKEN to add to pull requests
+  contents: write
+
+env:
+  PR_URL: ${{github.event.pull_request.html_url}}
+  # By default, GitHub Actions workflows triggered by renovate get a GITHUB_TOKEN with read-only permissions.
+  GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+
+jobs:
+  add_changeset:
+    runs-on: ubuntu-latest
+    name: Add changeset
+    # if: ${{ (github.actor == 'Octobob') && (contains(github.head_ref, 'renovate')) }}
+    steps:
+      - name: Add pre-release changeset
+        id: add_pre_release_changeset
+        uses: OctopusDeploy/util-actions/add-changeset@add-changeset.0.2.0
+        with:
+          type: patch
+          summary: ${{ github.event.pull_request.title }}
+          ignore: |
+            **/node_modules/**/*
+          filter: "@octopusdeploy"
