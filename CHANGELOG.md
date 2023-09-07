@@ -1,5 +1,11 @@
 # @octopusdeploy/login
 
+## 0.1.2
+
+### Patch Changes
+
+-   6088d54: Improve automation of releasing new versions
+
 ## 0.1.1
 
 ### Patch Changes
