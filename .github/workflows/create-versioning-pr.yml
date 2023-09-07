@@ -14,9 +14,6 @@ jobs:
   version:
     runs-on: ubuntu-latest
     name: Create versioning pull request
-    permissions:
-      pull-requests: write
-      contents: write
 
     # For all pushes to main that do not have a commit message that starts with Version Packages, and thus aren't merging a versioning PR
     # Run the changesets action, which will either no-op if there are no changesets present,
@@ -42,4 +39,4 @@ jobs:
         with:
           version: npm run ci:version
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.CHANGESETS_GITHUB_TOKEN }}
