@@ -60,6 +60,18 @@ jobs:
           name: dist
           path: dist/
 
+      - name: Parse version test
+        id: parse_version
+        uses: madhead/semver-utils@v3.1.0
+        with:
+          version: "0.1.3"
+
+      - run: echo 'git tag --force v${{ steps.parse_version.outputs.major }}.${{ steps.parse_version.outputs.minor }}'
+
+      - run: echo 'git tag --force v${{ steps.parse_version.outputs.major }}'
+
+      #- run: echo 'git push --force --tags origin'
+
   publish:
     runs-on: ubuntu-latest
     name: Publish
@@ -77,8 +89,25 @@ jobs:
         run: npm ci
 
       - name: Tag repo & create releases
+        id: changesets_publish
         uses: changesets/action@v1.4.5
         with:
           publish: npm run ci:publish
         env:
           GITHUB_TOKEN: ${{ secrets.CHANGESETS_GITHUB_TOKEN }}
+
+      - name: Parse published version
+        id: parse_version
+        uses: madhead/semver-utils@v3.1.0
+        with:
+          version: ${{ steps.changesets_publish.outputs.publishedPackages[0].version }}
+        if: ${{ steps.changesets_publish.outputs.published }}
+
+      - run: git tag --force v${{ steps.parse_version.outputs.major }}.${{ steps.parse_version.outputs.minor }}
+        if: ${{ steps.changesets_publish.outputs.published }}
+
+      - run: git tag --force v${{ steps.parse_version.outputs.major }}
+        if: ${{ steps.changesets_publish.outputs.published }}
+
+      - run: git push --force --tags origin
+        if: ${{ steps.changesets_publish.outputs.published }}
