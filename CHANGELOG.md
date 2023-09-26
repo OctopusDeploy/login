@@ -1,5 +1,11 @@
 # @octopusdeploy/login
 
+## 0.1.3
+
+### Patch Changes
+
+-   97636ae: More improvements to automation of releases
+
 ## 0.1.2
 
 ### Patch Changes
