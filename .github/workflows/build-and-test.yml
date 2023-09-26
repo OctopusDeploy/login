@@ -65,7 +65,7 @@ jobs:
     name: Publish
     needs: build
     permissions:
-      contents: write
+      contents: write # Needed to tag repo and create releases
     if: ${{ github.ref == 'refs/heads/main' && startsWith(github.event.commits[0].message, 'Version Packages') }}
     steps:
       - uses: actions/checkout@v3
