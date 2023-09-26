@@ -68,7 +68,7 @@ jobs:
         id: parse_version
         uses: madhead/semver-utils@v3.1.0
         with:
-          version: ${{ fromJSON(steps.changesets_publish.outputs.publishedPackages)[0].version }}
+          version: ${{ steps.changesets_publish.outputs.publishedPackages[0].version }}
 
       - run: echo '${{ steps.parse_version.outputs.major }}.${{ steps.parse_version.outputs.minor }}'
 
