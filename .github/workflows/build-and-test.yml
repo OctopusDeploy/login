@@ -90,7 +90,7 @@ jobs:
         id: parse_version
         uses: madhead/semver-utils@v3.1.0
         with:
-          version: ${{ steps.changesets_publish.outputs.publishedPackages[0].version }}
+          version: ${{ fromJSON(steps.changesets_publish.outputs.publishedPackages)[0].version }}
         if: ${{ steps.changesets_publish.outputs.published }}
 
       - name: Tag minor version
