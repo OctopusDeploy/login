@@ -1,5 +1,11 @@
 # @octopusdeploy/login
 
+## 0.1.4
+
+### Patch Changes
+
+-   72cd79f: Fix for parsing the version for major and minor tag creation
+
 ## 0.1.3
 
 ### Patch Changes
