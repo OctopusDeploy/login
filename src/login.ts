@@ -33,6 +33,11 @@ export type ExchangeOidcTokenResponse = {
     expires_in: string;
 };
 
+export type ExchangeOidcTokenErrorResponse = {
+    error: string;
+    error_description: string;
+};
+
 export type OctopusErrorResponse = {
     ErrorMessage: string;
     Errors: string[];
@@ -122,9 +127,23 @@ async function exchangeOidcTokenForAccessToken(inputs: InputParameters, oidcToke
     });
 
     if (!tokenExchangeResponse.ok) {
+        // Some versions of Octopus Server return errors in the "Octopus" format,
+        // whereas later versions will return errors in the spec format from https://www.rfc-editor.org/rfc/rfc8693#section-2.2.2.
+        // In order to support both we'll test for the spec version and if we don't find any data we'll fall back to the Octopus version.
+
+        const errorBody = await tokenExchangeResponse.json();
+
         // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-        const errorBody: OctopusErrorResponse = (await tokenExchangeResponse.json()) as OctopusErrorResponse;
-        throw new Error(errorBody.Errors.join(EOL));
+        const specErrorBody: ExchangeOidcTokenErrorResponse = errorBody as ExchangeOidcTokenErrorResponse;
+
+        if (specErrorBody.error) {
+            throw new Error(specErrorBody.error_description);
+        }
+
+        // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+        const octopusErrorBody: OctopusErrorResponse = errorBody as OctopusErrorResponse;
+
+        throw new Error(octopusErrorBody.Errors.join(EOL));
     }
 
     // eslint-disable-next-line @typescript-eslint/consistent-type-assertions

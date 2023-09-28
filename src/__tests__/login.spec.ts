@@ -1,7 +1,7 @@
 import { rest } from "msw";
 import { setupServer } from "msw/node";
 import { TestGitHubActionContext } from "../TestGitHubActionContext";
-import type { OctopusErrorResponse, ExchangeOidcTokenResponse, OpenIdConfiguration } from "../login";
+import type { OctopusErrorResponse, ExchangeOidcTokenResponse, OpenIdConfiguration, ExchangeOidcTokenErrorResponse } from "../login";
 import { login } from "../login";
 
 test("Login with API Key sets correct environment variables and output", async () => {
@@ -107,7 +107,7 @@ test("Error from OIDC configuration endpoint returns error", async () => {
     }
 });
 
-test("Failed login with OIDC returns error", async () => {
+test("When token exchange request from Server returns Octopus error format, login returns error", async () => {
     const context = new TestGitHubActionContext();
     const serverUrl = "https://my.octopus.app";
     const serviceAccountId = "my-service-account-id";
@@ -129,6 +129,44 @@ test("Failed login with OIDC returns error", async () => {
                 ctx.json<OctopusErrorResponse>({
                     ErrorMessage: "This is the error",
                     Errors: ["This is the error"],
+                })
+            );
+        })
+    );
+
+    server.listen();
+
+    context.setIDToken(async () => "id-token-from-github");
+
+    try {
+        await expect(() => login(context)).rejects.toThrow(new Error("This is the error"));
+    } finally {
+        server.close();
+    }
+});
+
+test("When token exchange request from Server returns spec error format, login returns error", async () => {
+    const context = new TestGitHubActionContext();
+    const serverUrl = "https://my.octopus.app";
+    const serviceAccountId = "my-service-account-id";
+    context.addInput("server", serverUrl);
+    context.addInput("service_account_id", serviceAccountId);
+
+    const server = setupServer(
+        rest.get("https://my.octopus.app/.well-known/openid-configuration", (_req, res, ctx) => {
+            return res(
+                ctx.json<OpenIdConfiguration>({
+                    issuer: "https://my.octopus.app",
+                    token_endpoint: "https://my.octopus.app/token/v1",
+                })
+            );
+        }),
+        rest.post("https://my.octopus.app/token/v1", (_req, res, ctx) => {
+            return res(
+                ctx.status(400),
+                ctx.json<ExchangeOidcTokenErrorResponse>({
+                    error: "invalid_request",
+                    error_description: "This is the error",
                 })
             );
         })
