@@ -84,7 +84,7 @@ export async function login(context: GitHubActionsContext) {
 
         const openIdConfiguration = await getOpenIdConfiguration(inputs);
 
-        const exchangeOidcTokenResponse = await exchangeOidcTokenForAccessToken(inputs, oidcToken, openIdConfiguration);
+        const exchangeOidcTokenResponse = await exchangeOidcTokenForAccessToken(inputs, oidcToken, openIdConfiguration, context);
 
         context.info(
             `Configuring environment to use access token for Octopus Instance '${inputs.server}' on behalf of service account '${inputs.serviceAccountId}'`
@@ -109,7 +109,12 @@ export async function login(context: GitHubActionsContext) {
     context.info(`🐙 Login successful, the GitHub actions environment has been configured to access your Octopus Instance. Happy deployments!`);
 }
 
-async function exchangeOidcTokenForAccessToken(inputs: InputParameters, oidcToken: string, openIdConfiguration: OpenIdConfiguration) {
+async function exchangeOidcTokenForAccessToken(
+    inputs: InputParameters,
+    oidcToken: string,
+    openIdConfiguration: OpenIdConfiguration,
+    context: GitHubActionsContext
+) {
     const tokenExchangeBody: ExchangeOidcTokenCommand = {
         grant_type: TokenExchangeGrantType,
         audience: inputs.serviceAccountId ?? "",
@@ -130,8 +135,11 @@ async function exchangeOidcTokenForAccessToken(inputs: InputParameters, oidcToke
         // Some versions of Octopus Server return errors in the "Octopus" format,
         // whereas later versions will return errors in the spec format from https://www.rfc-editor.org/rfc/rfc8693#section-2.2.2.
         // In order to support both we'll test for the spec version and if we don't find any data we'll fall back to the Octopus version.
+        context.info(`tokenExchangeResponse: ${tokenExchangeResponse}`);
 
         const errorBody = await tokenExchangeResponse.json();
+
+        context.info(`errorBody: ${errorBody}`);
 
         // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
         const specErrorBody: ExchangeOidcTokenErrorResponse = errorBody as ExchangeOidcTokenErrorResponse;
