@@ -107,12 +107,13 @@ test("Error from OIDC configuration endpoint returns error", async () => {
     }
 });
 
-test("When token exchange request from Server returns Octopus error format, login returns error", async () => {
+test("When token exchange request from Server returns error response in Octopus format, login returns the error correctly", async () => {
     const context = new TestGitHubActionContext();
     const serverUrl = "https://my.octopus.app";
     const serviceAccountId = "my-service-account-id";
     context.addInput("server", serverUrl);
     context.addInput("service_account_id", serviceAccountId);
+    const error = "This is the error in the Octopus format";
 
     const server = setupServer(
         rest.get("https://my.octopus.app/.well-known/openid-configuration", (_req, res, ctx) => {
@@ -127,8 +128,8 @@ test("When token exchange request from Server returns Octopus error format, logi
             return res(
                 ctx.status(400),
                 ctx.json<OctopusErrorResponse>({
-                    ErrorMessage: "This is the error",
-                    Errors: ["This is the error"],
+                    ErrorMessage: error,
+                    Errors: [error],
                 })
             );
         })
@@ -139,18 +140,19 @@ test("When token exchange request from Server returns Octopus error format, logi
     context.setIDToken(async () => "id-token-from-github");
 
     try {
-        await expect(() => login(context)).rejects.toThrow(new Error("This is the error"));
+        await expect(() => login(context)).rejects.toThrow(new Error(error));
     } finally {
         server.close();
     }
 });
 
-test("When token exchange request from Server returns spec error format, login returns error", async () => {
+test("When token exchange request from Server returns error response in rfc8693 format, login returns the error correctly", async () => {
     const context = new TestGitHubActionContext();
     const serverUrl = "https://my.octopus.app";
     const serviceAccountId = "my-service-account-id";
     context.addInput("server", serverUrl);
     context.addInput("service_account_id", serviceAccountId);
+    const error = "This is the error in the rfc8693 spec format";
 
     const server = setupServer(
         rest.get("https://my.octopus.app/.well-known/openid-configuration", (_req, res, ctx) => {
@@ -166,7 +168,7 @@ test("When token exchange request from Server returns spec error format, login r
                 ctx.status(400),
                 ctx.json<ExchangeOidcTokenErrorResponse>({
                     error: "invalid_request",
-                    error_description: "This is the error",
+                    error_description: error,
                 })
             );
         })
@@ -177,7 +179,7 @@ test("When token exchange request from Server returns spec error format, login r
     context.setIDToken(async () => "id-token-from-github");
 
     try {
-        await expect(() => login(context)).rejects.toThrow(new Error("This is the error"));
+        await expect(() => login(context)).rejects.toThrow(new Error(error));
     } finally {
         server.close();
     }
