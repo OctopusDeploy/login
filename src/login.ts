@@ -131,15 +131,15 @@ async function exchangeOidcTokenForAccessToken(
         },
     });
 
+    context.debug(`Token exchange response - Status: ${tokenExchangeResponse.status}`);
+
     if (!tokenExchangeResponse.ok) {
         // Some versions of Octopus Server return errors in the "Octopus" format,
         // whereas later versions will return errors in the spec format from https://www.rfc-editor.org/rfc/rfc8693#section-2.2.2.
         // In order to support both we'll test for the spec version and if we don't find any data we'll fall back to the Octopus version.
-        context.info(`tokenExchangeResponse: ${tokenExchangeResponse}`);
-
         const errorBody = await tokenExchangeResponse.json();
 
-        context.info(`errorBody: ${errorBody}`);
+        context.debug(`Token exchange error response: ${errorBody}`);
 
         // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
         const specErrorBody: ExchangeOidcTokenErrorResponse = errorBody as ExchangeOidcTokenErrorResponse;
