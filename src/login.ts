@@ -139,7 +139,7 @@ async function exchangeOidcTokenForAccessToken(
         // In order to support both we'll test for the spec version and if we don't find any data we'll fall back to the Octopus version.
         const errorBody = await tokenExchangeResponse.json();
 
-        context.debug(`Token exchange error response: ${errorBody}`);
+        context.debug(`Token exchange error response: ${JSON.stringify(errorBody)}`);
 
         // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
         const specErrorBody: ExchangeOidcTokenErrorResponse = errorBody as ExchangeOidcTokenErrorResponse;
