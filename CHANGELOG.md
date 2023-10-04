@@ -1,5 +1,11 @@
 # @octopusdeploy/login
 
+## 0.2.0
+
+### Minor Changes
+
+-   6ca6d29: Add support for handling errors in rfc8693 format
+
 ## 0.1.4
 
 ### Patch Changes
