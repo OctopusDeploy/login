@@ -6,42 +6,11 @@ After successful login, the GitHub Actions environment will be configured so tha
 
 This action supports two ways of logging in:
 
-## API Key
-
-To login using an API Key:
-
--   Provision an API key in Octopus. See [How to create an API key](https://octopus.com/docs/octopus-rest-api/how-to-create-an-api-key) for more information. It is recommended that a service account is used instead of a user account.
--   Add the `OctopusDeploy/login` action to your workflow, specifying the `server` and `api_key` inputs.
-
-### Inputs
-
-| Name      | Description                                                                                                                                                          |
-| --------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `server`  | The URL of your Octopus server. This input is required.                                                                                                              |
-| `api_key` | The API key you wish to login in with. It is **strongly recommended** to store this as a secret in GitHub Actions. This input is required if using API Key to login. |
-
-### Outputs
-
-| Name      | Description                                                                                                                        |
-| --------- | ---------------------------------------------------------------------------------------------------------------------------------- |
-| `server`  | The URL of your Octopus server that has been logged into. The environment variable `OCTOPUS_URL` will also be set with this value. |
-| `api_key` | The API key that was used to login in with. The environment variable `OCTOPUS_API_KEY` will also be set with this value.           |
-
-### Example
-
-```yaml
-- name: Login to Octopus
-  uses: OctopusDeploy/login@v0
-  with:
-      server: https://my.octopus.app
-      api_key: ${{ secrets.OCTOPUS_API_KEY }}
-```
-
 ## OpenID Connect (OIDC)
 
 > Support for OpenID Connect is currently in development and may not be available in your Octopus version just yet.
 
-Using OpenID Connect (OIDC) is the recommended way to login from GitHub Actions to Octopus. It allows the granting of short-lived access tokens for a service account in Octopus that can be used during your GitHub Actions workflow run, without needing to provision or store an API key.
+Using OpenID Connect (OIDC) is the recommended way to login to Octopus from GitHub Actions. It allows the granting of short-lived access tokens for a service account in Octopus that can be used during your GitHub Actions workflow run, without needing to provision or store an API key.
 
 See [About security hardening with OpenID Connect](https://docs.github.com/en/actions/deployment/security-hardening-your-deployments/about-security-hardening-with-openid-connect) for more information.
 
@@ -70,10 +39,41 @@ To login using OIDC:
 
 ```yaml
 - name: Login to Octopus
-  uses: OctopusDeploy/login@v0
+  uses: OctopusDeploy/login@v1
   with:
       server: https://my.octopus.app
       service_account_id: 5be4ac10-2679-4041-a8b0-7b05b445e19e
+```
+
+## API Key
+
+To login using an API Key:
+
+-   Provision an API key in Octopus. See [How to create an API key](https://octopus.com/docs/octopus-rest-api/how-to-create-an-api-key) for more information. It is recommended that a service account is used instead of a user account.
+-   Add the `OctopusDeploy/login` action to your workflow, specifying the `server` and `api_key` inputs.
+
+### Inputs
+
+| Name      | Description                                                                                                                                                          |
+| --------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `server`  | The URL of your Octopus server. This input is required.                                                                                                              |
+| `api_key` | The API key you wish to login in with. It is **strongly recommended** to store this as a secret in GitHub Actions. This input is required if using API Key to login. |
+
+### Outputs
+
+| Name      | Description                                                                                                                        |
+| --------- | ---------------------------------------------------------------------------------------------------------------------------------- |
+| `server`  | The URL of your Octopus server that has been logged into. The environment variable `OCTOPUS_URL` will also be set with this value. |
+| `api_key` | The API key that was used to login in with. The environment variable `OCTOPUS_API_KEY` will also be set with this value.           |
+
+### Example
+
+```yaml
+- name: Login to Octopus
+  uses: OctopusDeploy/login@v1
+  with:
+      server: https://my.octopus.app
+      api_key: ${{ secrets.OCTOPUS_API_KEY }}
 ```
 
 ## Development
