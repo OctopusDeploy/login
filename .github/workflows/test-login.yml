@@ -22,6 +22,9 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
+      - name: Install Octopus CLI
+        uses: OctopusDeploy/install-octopus-cli-action@v3
+
       - name: Login to Octopus using OIDC
         uses: ./
         id: oidc
@@ -35,6 +38,9 @@ jobs:
           echo "OCTOPUS_ACCESS_TOKEN = $OCTOPUS_ACCESS_TOKEN"
           echo "server = ${{ steps.oidc.outputs.server }}"
           echo "access_token = ${{ steps.oidc.outputs.access_token }}"
+
+      - name: List environments using CLI (OIDC)
+        run: octopus environment list --space Default
 
       - name: Login to Octopus using API Key
         uses: ./
@@ -50,8 +56,5 @@ jobs:
           echo "server = ${{ steps.api_key.outputs.server }}"
           echo "api_key = ${{ steps.api_key.outputs.api_key }}"
 
-      - name: Install Octopus CLI
-        uses: OctopusDeploy/install-octopus-cli-action@v3
-
-      - name: List environments using CLI
+      - name: List environments using CLI (API Key)
         run: octopus environment list --space Default
