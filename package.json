@@ -4,7 +4,7 @@
   "description": "GitHub action to login to your Octopus Server",
   "main": "src/index.ts",
   "scripts": {
-    "build": "esbuild src/index.ts --bundle --platform=node --target=node16 --minify --outdir=./dist",
+    "build": "esbuild src/index.ts --bundle --platform=node --target=node20 --minify --outdir=./dist",
     "changeset": "changeset",
     "ci:publish": "npm run changeset tag",
     "ci:test": "jest --reporters=jest-junit",
@@ -31,7 +31,7 @@
   "devDependencies": {
     "@changesets/cli": "2.26.2",
     "@types/jest": "29.5.6",
-    "@types/node": "16.18.59",
+    "@types/node": "20.8.8",
     "@types/node-fetch": "2.6.7",
     "@typescript-eslint/eslint-plugin": "6.9.0",
     "@typescript-eslint/parser": "6.9.0",
@@ -58,8 +58,8 @@
     "node-fetch": "2.6.13"
   },
   "engines": {
-    "node": "16.20.2",
-    "npm": "8.19.4"
+    "node": "^20",
+    "npm": "^10"
   },
   "jest-junit": {
     "outputDirectory": "test-results",
