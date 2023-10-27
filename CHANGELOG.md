@@ -1,5 +1,21 @@
 # @octopusdeploy/login
 
+## 1.0.1
+
+### Patch Changes
+
+-   abcc8be: Fix action name to be unique
+
+## 1.0.0
+
+### Major Changes
+
+-   0311fc3: Releasing v1 of OctopusDeploy/login action
+
+### Minor Changes
+
+-   6d0e462: Upgrade to node 20
+
 ## 0.2.0
 
 ### Minor Changes
