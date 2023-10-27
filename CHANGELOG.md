@@ -1,5 +1,11 @@
 # @octopusdeploy/login
 
+## 1.0.1
+
+### Patch Changes
+
+-   abcc8be: Fix action name to be unique
+
 ## 1.0.0
 
 ### Major Changes
