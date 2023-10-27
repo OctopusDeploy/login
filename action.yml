@@ -1,4 +1,4 @@
-name: Login
+name: Login to Octopus Deploy
 description: Login to your Octopus Server
 author: Octopus Deploy
 runs:
