@@ -8,7 +8,7 @@ This action supports two ways of logging in:
 
 ## OpenID Connect (OIDC)
 
-> Support for OpenID Connect is being rolled out to Octopus Cloud and may not be available in your Octopus version just yet.
+> Support for OpenID Connect is currently being rolled out to Octopus Cloud and may not be available in your Octopus version just yet.
 
 Using OpenID Connect (OIDC) is the recommended way to login to Octopus from GitHub Actions. It allows the granting of short-lived access tokens for a service account in Octopus that can be used during your GitHub Actions workflow run, without needing to provision or store an API key.
 
