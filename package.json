@@ -23,7 +23,7 @@
     "octopus"
   ],
   "author": "Octopus Deploy",
-  "license": "ISC",
+  "license": "Apache-2.0",
   "bugs": {
     "url": "https://github.com/OctopusDeploy/login/issues"
   },
