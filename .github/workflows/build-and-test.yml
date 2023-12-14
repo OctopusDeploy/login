@@ -108,19 +108,24 @@ jobs:
         uses: OctopusDeploy/install-octopus-cli-action@v3
 
       - name: List users
-        run: octopus user list
+        run: octopus user list --space Default
 
       - name: Create OIDC identity
         run: 'curl -X POST -H ''Content-Type: application/json'' -d ''{"serviceAccountId":"Users-1","name":"GitHub Actions", "issuer": "https://token.actions.githubusercontent.com", "repo:OctopusDeploy/login:pull_request"}'' ${{ env.SERVER_URL }}/api/serviceaccounts/Users-1/oidcidentities/create/v1'
 
       - name: Get OIDC identity details
-        run: "curl ${{ env.SERVER_URL }}/api/serviceaccounts/Users-1/oidcidentities/v1"
+        run: |
+          curl ${{ env.SERVER_URL }}/api/serviceaccounts/Users-1/oidcidentities/v1 > ./oidcidentities.json
 
-      # - name: Test login with OIDC
-      #   uses: ./
-      #   with:
-      #     server: ${{ env.SERVER_URL }}
-      #     service_account_id: ${{ env.ADMIN_API_KEY }}
+          service_account_id=$(jq -r '.serviceAccountId' ./oidcidentities.json)
+
+          echo "$service_account_id" >> $GITHUB_ENV
+
+      - name: Test login with OIDC
+        uses: ./
+        with:
+          server: ${{ env.SERVER_URL }}
+          service_account_id: ${{ env.service_account_id }}
 
   publish:
     runs-on: ubuntu-latest
