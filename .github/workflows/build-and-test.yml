@@ -120,13 +120,13 @@ jobs:
 
           service_account_id=$(jq -r '.ExternalId' ./oidcidentities.json)
 
-          echo "$service_account_id" >> $GITHUB_ENV
+          echo "SERVICE_ACCOUNT_ID=$service_account_id" >> $GITHUB_ENV
 
       - name: Test login with OIDC
         uses: ./
         with:
           server: ${{ env.SERVER_URL }}
-          service_account_id: ${{ env.service_account_id }}
+          service_account_id: ${{ env.SERVICE_ACCOUNT_ID }}
 
   publish:
     runs-on: ubuntu-latest
