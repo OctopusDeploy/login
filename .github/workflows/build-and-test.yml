@@ -8,7 +8,7 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    name: Build and test
+    name: Build and unit test
     permissions:
       contents: read
       actions: write
@@ -17,7 +17,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Set Node.js 20.x
+      - name: Setup node 20
         uses: actions/setup-node@v3
         with:
           node-version: 20.x
@@ -62,6 +62,7 @@ jobs:
 
   test:
     runs-on: ubuntu-latest
+    name: Integration test
     needs: build
     env:
       SA_PASSWORD: ${{ secrets.INTEGRATION_TEST_SQL_SA_PASSWORD }}
@@ -85,11 +86,15 @@ jobs:
         env:
           ACCEPT_EULA: Y
           DB_CONNECTION_STRING: "Server=sqlserver;Database=OctopusDeploy;User Id=sa;Password=${{ env.SA_PASSWORD }};"
+          ADMIN_USERNAME: admin
           ADMIN_API_KEY: ${{ env.ADMIN_API_KEY }}
           ENABLE_USAGE: N
           OCTOPUS_SERVER_BASE64_LICENSE: ${{ secrets.INTEGRATION_TEST_OCTOPUS_BASE64_LICENSE }}
         ports:
           - 8080:8080
+    permissions:
+      contents: read
+      id-token: write
     steps:
       - uses: actions/checkout@v3
 
@@ -102,8 +107,20 @@ jobs:
       - name: Install Octopus CLI
         uses: OctopusDeploy/install-octopus-cli-action@v3
 
-      - name: List spaces
-        run: octopus spaces list
+      - name: List users
+        run: octopus user list
+
+      - name: Create OIDC identity
+        run: 'curl -X POST -H ''Content-Type: application/json'' -d ''{"serviceAccountId":"Users-1","name":"GitHub Actions", "issuer": "https://token.actions.githubusercontent.com", "repo:OctopusDeploy/login:pull_request"}'' ${{ env.SERVER_URL }}/api/serviceaccounts/Users-1/oidcidentities/create/v1'
+
+      - name: Get OIDC identity details
+        run: "curl ${{ env.SERVER_URL }}/api/serviceaccounts/Users-1/oidcidentities/v1"
+
+      # - name: Test login with OIDC
+      #   uses: ./
+      #   with:
+      #     server: ${{ env.SERVER_URL }}
+      #     service_account_id: ${{ env.ADMIN_API_KEY }}
 
   publish:
     runs-on: ubuntu-latest
