@@ -112,7 +112,7 @@ jobs:
         run: octopus user list
 
       - name: Create OIDC identity
-        run: 'curl -X POST -H ''X-Octopus-ApiKey: ${{ env.ADMIN_API_KEY }}'' -H ''Content-Type: application/json'' -d ''{"serviceAccountId":"Users-1","name":"GitHub Actions", "issuer": "https://token.actions.githubusercontent.com", "repo:OctopusDeploy/login:pull_request"}'' ${{ env.SERVER_URL }}/api/serviceaccounts/Users-1/oidcidentities/create/v1'
+        run: 'curl -X POST -H ''X-Octopus-ApiKey: ${{ env.ADMIN_API_KEY }}'' -H ''Content-Type: application/json'' -d ''{"serviceAccountId":"Users-1","name":"GitHub Actions","issuer":"https://token.actions.githubusercontent.com","subject":"repo:OctopusDeploy/login:pull_request"}'' ${{ env.SERVER_URL }}/api/serviceaccounts/Users-1/oidcidentities/create/v1'
 
       - name: Get OIDC identity details
         run: |
