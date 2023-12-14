@@ -68,6 +68,7 @@ jobs:
       SA_PASSWORD: ${{ secrets.INTEGRATION_TEST_SQL_SA_PASSWORD }}
       ADMIN_API_KEY: ${{ secrets.INTEGRATION_TEST_OCTOPUS_ADMIN_API_KEY }}
       SERVER_URL: "http://localhost:8080"
+      OCTOPUS_SPACE: Default
     services:
       sqlserver:
         image: mcr.microsoft.com/mssql/server:2019-latest
@@ -108,14 +109,14 @@ jobs:
         uses: OctopusDeploy/install-octopus-cli-action@v3
 
       - name: List users
-        run: octopus user list --space Default
+        run: octopus user list
 
       - name: Create OIDC identity
         run: 'curl -X POST -H ''Content-Type: application/json'' -d ''{"serviceAccountId":"Users-1","name":"GitHub Actions", "issuer": "https://token.actions.githubusercontent.com", "repo:OctopusDeploy/login:pull_request"}'' ${{ env.SERVER_URL }}/api/serviceaccounts/Users-1/oidcidentities/create/v1'
 
       - name: Get OIDC identity details
         run: |
-          curl ${{ env.SERVER_URL }}/api/serviceaccounts/Users-1/oidcidentities/v1 > ./oidcidentities.json
+          curl -s ${{ env.SERVER_URL }}/api/serviceaccounts/Users-1/oidcidentities/v1 > ./oidcidentities.json
 
           service_account_id=$(jq -r '.serviceAccountId' ./oidcidentities.json)
 
