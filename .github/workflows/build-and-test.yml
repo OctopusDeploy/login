@@ -60,10 +60,53 @@ jobs:
           name: dist
           path: dist/
 
+  test:
+    runs-on: ubuntu-latest
+    needs: build
+    env:
+      SA_PASSWORD: ${{ secrets.INTEGRATION_TEST_SQL_SA_PASSWORD }}
+      ADMIN_API_KEY: ${{ secrets.INTEGRATION_TEST_OCTOPUS_ADMIN_API_KEY }}
+      SERVER_URL: "http://localhost:8080"
+    services:
+      sqlserver:
+        image: mcr.microsoft.com/mssql/server:2019-latest
+        env:
+          ACCEPT_EULA: Y
+          SA_PASSWORD: ${{ env.SA_PASSWORD }}
+          MSSQL_PID: Developer
+        options: >-
+          --health-cmd "/opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P \"$SA_PASSWORD\" -Q \"SELECT 1\" || exit 1"
+          --health-interval 10s
+          --health-timeout 3s
+          --health-retries 10
+          --health-start-period 10s
+      octopusserver:
+        image: octopusdeploy/octopusdeploy
+        env:
+          ACCEPT_EULA: Y
+          DB_CONNECTION_STRING: "Server=sqlserver;Database=OctopusDeploy;User Id=sa;Password=${{ env.SA_PASSWORD }};"
+          ADMIN_API_KEY: ${{ env.ADMIN_API_KEY }}
+          ENABLE_USAGE: N
+          OCTOPUS_SERVER_BASE64_LICENSE: ${{ secrets.INTEGRATION_TEST_OCTOPUS_BASE64_LICENSE }}
+        ports:
+          - 8080:8080
+    steps:
+      - name: Test login with API Key
+        uses: ./
+        with:
+          server: ${{ env.SERVER_URL }}
+          api_key: ${{ env.ADMIN_API_KEY }}
+
+      - name: Install Octopus CLI
+        uses: OctopusDeploy/install-octopus-cli-action@v3
+
+      - name: List spaces
+        run: octopus spaces list
+
   publish:
     runs-on: ubuntu-latest
     name: Publish
-    needs: build
+    needs: test
     permissions:
       contents: write # Needed to tag repo and create releases
     if: ${{ github.ref == 'refs/heads/main' && startsWith(github.event.commits[0].message, 'Version Packages') }}
