@@ -118,7 +118,7 @@ jobs:
         run: |
           curl -s ${{ env.SERVER_URL }}/api/serviceaccounts/Users-1/oidcidentities/v1 > ./oidcidentities.json
 
-          service_account_id=$(jq -r '.serviceAccountId' ./oidcidentities.json)
+          service_account_id=$(jq -r '.ExternalId' ./oidcidentities.json)
 
           echo "$service_account_id" >> $GITHUB_ENV
 
