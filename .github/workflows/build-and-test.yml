@@ -68,7 +68,6 @@ jobs:
       SA_PASSWORD: ${{ secrets.INTEGRATION_TEST_SQL_SA_PASSWORD }}
       ADMIN_API_KEY: ${{ secrets.INTEGRATION_TEST_OCTOPUS_ADMIN_API_KEY }}
       SERVER_URL: "http://localhost:8080"
-      OCTOPUS_SPACE: Default
     services:
       sqlserver:
         image: mcr.microsoft.com/mssql/server:2019-latest
@@ -99,17 +98,25 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
+      - name: Install Octopus CLI
+        uses: OctopusDeploy/install-octopus-cli-action@v3
+
       - name: Test login with API Key
+        id: api_key
         uses: ./
         with:
           server: ${{ env.SERVER_URL }}
           api_key: ${{ env.ADMIN_API_KEY }}
 
-      - name: Install Octopus CLI
-        uses: OctopusDeploy/install-octopus-cli-action@v3
+      - name: Print Octopus credential environment variables from API Key login
+        run: |
+          echo "OCTOPUS_URL = $OCTOPUS_URL"
+          echo "OCTOPUS_API_KEY = $OCTOPUS_API_KEY"
+          echo "server = ${{ steps.api_key.outputs.server }}"
+          echo "api_key = ${{ steps.api_key.outputs.api_key }}"
 
-      - name: List users
-        run: octopus user list
+      - name: List environments using CLI (API Key)
+        run: octopus environment list --space Default
 
       - name: Create OIDC identity
         run: 'curl -X POST -H ''X-Octopus-ApiKey: ${{ env.ADMIN_API_KEY }}'' -H ''Content-Type: application/json'' -d ''{"serviceAccountId":"Users-1","name":"GitHub Actions","issuer":"https://token.actions.githubusercontent.com","subject":"repo:OctopusDeploy/login:pull_request"}'' ${{ env.SERVER_URL }}/api/serviceaccounts/Users-1/oidcidentities/create/v1'
@@ -123,10 +130,21 @@ jobs:
           echo "SERVICE_ACCOUNT_ID=$service_account_id" >> $GITHUB_ENV
 
       - name: Test login with OIDC
+        id: oidc
         uses: ./
         with:
           server: ${{ env.SERVER_URL }}
           service_account_id: ${{ env.SERVICE_ACCOUNT_ID }}
+
+      - name: Print Octopus credential environment variables from OIDC login
+        run: |
+          echo "OCTOPUS_URL = $OCTOPUS_URL"
+          echo "OCTOPUS_ACCESS_TOKEN = $OCTOPUS_ACCESS_TOKEN"
+          echo "server = ${{ steps.oidc.outputs.server }}"
+          echo "access_token = ${{ steps.oidc.outputs.access_token }}"
+
+      - name: List environments using CLI (OIDC)
+        run: octopus environment list --space Default
 
   publish:
     runs-on: ubuntu-latest
