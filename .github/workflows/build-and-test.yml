@@ -116,7 +116,7 @@ jobs:
 
       - name: Get OIDC identity details
         run: |
-          curl -s ${{ env.SERVER_URL }}/api/serviceaccounts/Users-1/oidcidentities/v1 > ./oidcidentities.json
+          curl -s -H "X-Octopus-ApiKey: ${{ env.ADMIN_API_KEY }}" "${{ env.SERVER_URL }}/api/serviceaccounts/Users-1/oidcidentities/v1?skip=0&take=1000" > ./oidcidentities.json
 
           service_account_id=$(jq -r '.ExternalId' ./oidcidentities.json)
 
