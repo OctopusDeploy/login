@@ -118,8 +118,16 @@ jobs:
       - name: List environments using CLI (API Key)
         run: octopus environment list --space Default
 
+      - name: Get OIDC identity subject (PR)
+        run: echo "SUBJECT_REF=pull_request" >> $GITHUB_ENV
+        if: ${{ github.event_name == 'pull_request' }}
+
+      - name: Get OIDC identity subject (branch)
+        run: echo "SUBJECT_REF=ref:${{ github.ref }}" >> $GITHUB_ENV
+        if: ${{ github.event_name != 'pull_request' }}
+
       - name: Create OIDC identity
-        run: 'curl -X POST -H ''X-Octopus-ApiKey: ${{ env.ADMIN_API_KEY }}'' -H ''Content-Type: application/json'' -d ''{"serviceAccountId":"Users-1","name":"GitHub Actions","issuer":"https://token.actions.githubusercontent.com","subject":"repo:OctopusDeploy/login:pull_request"}'' ${{ env.SERVER_URL }}/api/serviceaccounts/Users-1/oidcidentities/create/v1'
+        run: 'curl -X POST -H ''X-Octopus-ApiKey: ${{ env.ADMIN_API_KEY }}'' -H ''Content-Type: application/json'' -d ''{"serviceAccountId":"Users-1","name":"GitHub Actions","issuer":"https://token.actions.githubusercontent.com","subject":"repo:OctopusDeploy/login:${{ env.SUBJECT_REF }}"}'' ${{ env.SERVER_URL }}/api/serviceaccounts/Users-1/oidcidentities/create/v1'
 
       - name: Get OIDC identity details
         run: |
