@@ -1,0 +1,16 @@
+name: Send security alerts to slack
+on:
+  schedule:
+    - cron: "0 0 * * *"
+
+  workflow_dispatch:
+
+jobs:
+  renovate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send security alert notifications to slack
+        uses: kunalnagarco/action-cve@v1.8.0
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          slack_webhook: ${{ secrets.SECURITY_ALERTS_SLACK_WEBHOOK_URL }}
