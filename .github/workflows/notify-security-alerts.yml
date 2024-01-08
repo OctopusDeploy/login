@@ -5,10 +5,6 @@ on:
 
   workflow_dispatch:
 
-  # Temp so we can test the workflow
-  pull_request:
-    branches: main
-
 jobs:
   send_security_alerts:
     runs-on: ubuntu-latest
