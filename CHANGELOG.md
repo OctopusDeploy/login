@@ -1,4 +1,4 @@
-# @octopusdeploy/login
+# octopusdeploy/login
 
 ## 1.0.1
 

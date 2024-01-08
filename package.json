@@ -5,10 +5,7 @@
   "main": "src/index.ts",
   "scripts": {
     "build": "esbuild src/index.ts --bundle --platform=node --target=node20 --minify --outdir=./dist",
-    "changeset": "changeset",
-    "ci:publish": "npm run changeset tag",
     "ci:test": "jest --reporters=jest-junit",
-    "ci:version": "npm run changeset version",
     "lint:fix": "eslint . --fix",
     "lint": "eslint . --no-error-on-unmatched-pattern",
     "test": "jest"
@@ -29,7 +26,6 @@
   },
   "homepage": "https://github.com/OctopusDeploy/login#readme",
   "devDependencies": {
-    "@changesets/cli": "2.27.1",
     "@types/jest": "29.5.11",
     "@types/node": "20.9.5",
     "@types/node-fetch": "2.6.10",
