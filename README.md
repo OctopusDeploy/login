@@ -41,24 +41,24 @@ To login using OIDC:
 
 ```yaml
 jobs:
-    create_release_in_octopus:
-        runs-on: ubuntu-latest
-        name: Create a release in Octopus
-        permissions:
-            # You might need to add other permissions here like `contents: read` depending on what else your job needs to do
-            id-token: write # This is required to obtain an ID token from GitHub Actions for the job
-        steps:
-            - name: Login to Octopus
-              uses: OctopusDeploy/login@v1
-              with:
-                  server: https://my.octopus.app
-                  service_account_id: 5be4ac10-2679-4041-a8b0-7b05b445e19e
+  create_release_in_octopus:
+    runs-on: ubuntu-latest
+    name: Create a release in Octopus
+    permissions:
+      # You might need to add other permissions here like `contents: read` depending on what else your job needs to do
+      id-token: write # This is required to obtain an ID token from GitHub Actions for the job
+    steps:
+      - name: Login to Octopus
+        uses: OctopusDeploy/login@v1
+        with:
+          server: https://my.octopus.app
+          service_account_id: 5be4ac10-2679-4041-a8b0-7b05b445e19e
 
-            - name: Create a release in Octopus
-              uses: OctopusDeploy/create-release-action@v3
-              with:
-                  space: Default
-                  project: My Octopus Project
+      - name: Create a release in Octopus
+        uses: OctopusDeploy/create-release-action@v3
+        with:
+          space: Default
+          project: My Octopus Project
 ```
 
 ### Support in other GitHub Actions
@@ -100,19 +100,19 @@ To login using an API Key:
 
 ```yaml
 jobs:
-    create_release_in_octopus:
-        runs-on: ubuntu-latest
-        name: Create a release in Octopus
-        steps:
-            - name: Login to Octopus
-              uses: OctopusDeploy/login@v1
-              with:
-                  server: https://my.octopus.app
-                  api_key: ${{ secrets.OCTOPUS_API_KEY }}
+  create_release_in_octopus:
+    runs-on: ubuntu-latest
+    name: Create a release in Octopus
+    steps:
+      - name: Login to Octopus
+        uses: OctopusDeploy/login@v1
+        with:
+          server: https://my.octopus.app
+          api_key: ${{ secrets.OCTOPUS_API_KEY }}
 
-            - name: Create a release in Octopus
-              uses: OctopusDeploy/create-release-action@v3
-              with:
-                  space: Default
-                  project: My Octopus Project
+      - name: Create a release in Octopus
+        uses: OctopusDeploy/create-release-action@v3
+        with:
+          space: Default
+          project: My Octopus Project
 ```
