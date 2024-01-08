@@ -5,6 +5,10 @@ on:
 
   workflow_dispatch:
 
+  # Temp so we can test the workflow
+  pull_request:
+    branches: main
+
 jobs:
   renovate:
     runs-on: ubuntu-latest
