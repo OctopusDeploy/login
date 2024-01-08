@@ -10,8 +10,10 @@ on:
     branches: main
 
 jobs:
-  renovate:
+  send_security_alerts:
     runs-on: ubuntu-latest
+    permissions:
+      security-events: read
     steps:
       - name: Send security alert notifications to slack
         uses: kunalnagarco/action-cve@v1.8.0
