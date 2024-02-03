@@ -1,5 +1,12 @@
 # octopusdeploy/login
 
+## [1.0.2](https://github.com/OctopusDeploy/login/compare/v1.0.1...v1.0.2) (2024-02-03)
+
+
+### Bug Fixes
+
+* **deps:** update dependency node-fetch to v2.7.0 ([#26](https://github.com/OctopusDeploy/login/issues/26)) ([8ee2f67](https://github.com/OctopusDeploy/login/commit/8ee2f67f99a6061243640c3a94642294683651ab))
+
 ## 1.0.1
 
 ### Patch Changes
