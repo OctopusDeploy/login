@@ -1,6 +1,6 @@
 {
   "name": "@octopusdeploy/login",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "GitHub action to login to your Octopus Server",
   "main": "src/index.ts",
   "scripts": {
