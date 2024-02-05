@@ -13,6 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write # Needed to tag repo and create releases
+      pull-requests: write # Needed to add comments to pull requests on release
     steps:
       - uses: google-github-actions/release-please-action@v3
         id: release
