@@ -1,5 +1,9 @@
 name: Build and test
 on:
+  schedule:
+    # Daily 5am australian/brisbane time (7pm UTC)
+    - cron: '0 19 * * *'
+
   pull_request:
   push:
     branches:
@@ -70,7 +74,7 @@ jobs:
       SERVER_URL: "http://localhost:8080"
     services:
       sqlserver:
-        image: mcr.microsoft.com/mssql/server:2019-latest
+        image: mcr.microsoft.com/mssql/server:2019-CU27-ubuntu-20.04
         env:
           ACCEPT_EULA: Y
           SA_PASSWORD: ${{ env.SA_PASSWORD }}
