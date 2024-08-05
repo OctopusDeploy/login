@@ -1,5 +1,9 @@
 name: Build and test
 on:
+  schedule:
+    # Daily 5am australian/brisbane time (7pm UTC)
+    - cron: '0 19 * * *'
+    
   pull_request:
   push:
     branches:
