@@ -26,7 +26,7 @@
   },
   "homepage": "https://github.com/OctopusDeploy/login#readme",
   "devDependencies": {
-    "@types/jest": "29.5.13",
+    "@types/jest": "29.5.14",
     "@types/node": "20.11.30",
     "@types/node-fetch": "2.6.11",
     "@typescript-eslint/eslint-plugin": "6.21.0",
