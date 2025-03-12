@@ -1,5 +1,12 @@
 # octopusdeploy/login
 
+## [1.0.3](https://github.com/OctopusDeploy/login/compare/v1.0.2...v1.0.3) (2025-03-12)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @actions/core to v1.11.1 ([ab071a0](https://github.com/OctopusDeploy/login/commit/ab071a00bec8755cd549fc7b0ae5db10c364d028))
+
 ## [1.0.2](https://github.com/OctopusDeploy/login/compare/v1.0.1...v1.0.2) (2024-02-03)
 
 
