@@ -54,7 +54,7 @@
     "node-fetch": "2.7.0"
   },
   "engines": {
-    "node": "20.18.3",
+    "node": "20.19.1",
     "npm": "10.9.2"
   },
   "jest-junit": {
