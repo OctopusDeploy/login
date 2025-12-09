@@ -141,20 +141,17 @@ async function exchangeOidcTokenForAccessToken(
 
         context.debug(`Token exchange error response: ${JSON.stringify(errorBody)}`);
 
-        // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
         const specErrorBody: ExchangeOidcTokenErrorResponse = errorBody as ExchangeOidcTokenErrorResponse;
 
         if (specErrorBody.error) {
             throw new Error(specErrorBody.error_description);
         }
 
-        // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
         const octopusErrorBody: OctopusErrorResponse = errorBody as OctopusErrorResponse;
 
         throw new Error(octopusErrorBody.Errors.join(EOL));
     }
 
-    // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
     return (await tokenExchangeResponse.json()) as ExchangeOidcTokenResponse;
 }
 
@@ -169,12 +166,10 @@ async function getOpenIdConfiguration(inputs: InputParameters) {
     });
 
     if (!openIdConfigurationResponse.ok) {
-        // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
         const errorBody: OctopusErrorResponse = (await openIdConfigurationResponse.json()) as OctopusErrorResponse;
         throw new Error(errorBody.Errors.join(EOL));
     }
 
-    // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
     return (await openIdConfigurationResponse.json()) as OpenIdConfiguration;
 }
 

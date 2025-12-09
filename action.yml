@@ -2,7 +2,7 @@ name: Login to Octopus Deploy
 description: Login to your Octopus Server
 author: Octopus Deploy
 runs:
-  using: node20
+  using: node24
   main: dist/index.js
 inputs:
   server:
