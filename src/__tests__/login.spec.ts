@@ -1,8 +1,10 @@
-import { rest } from "msw";
-import { setupServer } from "msw/node";
+import fetch from "node-fetch";
 import { TestGitHubActionContext } from "../TestGitHubActionContext";
 import type { OctopusErrorResponse, ExchangeOidcTokenResponse, OpenIdConfiguration, ExchangeOidcTokenErrorResponse } from "../login";
 import { login } from "../login";
+
+jest.mock("node-fetch");
+const mockFetch = fetch as jest.MockedFunction<typeof fetch>;
 
 test("Login with API Key sets correct environment variables and output", async () => {
     const context = new TestGitHubActionContext();
@@ -33,48 +35,48 @@ test("Successful login with OIDC sets correct environment variables, outputs and
 
     const accessToken = "an-access-token-that-is-valid-woohoo";
 
-    const server = setupServer(
-        rest.get("https://my.octopus.app/.well-known/openid-configuration", (_req, res, ctx) => {
-            return res(
-                ctx.json<OpenIdConfiguration>({
-                    issuer: "https://my.octopus.app",
-                    token_endpoint: "https://my.octopus.app/token/v1",
-                })
-            );
-        }),
-        rest.post("https://my.octopus.app/token/v1", (_req, res, ctx) => {
-            return res(
-                ctx.json<ExchangeOidcTokenResponse>({
-                    access_token: accessToken,
-                    expires_in: "300",
-                    issued_token_type: "jwt",
-                    token_type: "Bearer",
-                })
-            );
-        })
-    );
-
-    server.listen();
+    mockFetch.mockImplementation((url) => {
+        if (url === `${serverUrl}/.well-known/openid-configuration`) {
+            return Promise.resolve({
+                ok: true,
+                json: async () =>
+                    ({
+                        issuer: serverUrl,
+                        token_endpoint: `${serverUrl}/token/v1`,
+                    }) as OpenIdConfiguration,
+            } as any);
+        }
+        if (url === `${serverUrl}/token/v1`) {
+            return Promise.resolve({
+                ok: true,
+                status: 200,
+                json: async () =>
+                    ({
+                        access_token: accessToken,
+                        expires_in: "300",
+                        issued_token_type: "jwt",
+                        token_type: "Bearer",
+                    }) as ExchangeOidcTokenResponse,
+            } as any);
+        }
+        return Promise.reject(new Error(`Unexpected fetch call to ${url}`));
+    });
 
     context.setIDToken(async () => "id-token-from-github");
 
-    try {
-        await login(context);
+    await login(context);
 
-        expect(context.getExportedVariables()).toEqual({
-            OCTOPUS_URL: serverUrl,
-            OCTOPUS_ACCESS_TOKEN: accessToken,
-        });
+    expect(context.getExportedVariables()).toEqual({
+        OCTOPUS_URL: serverUrl,
+        OCTOPUS_ACCESS_TOKEN: accessToken,
+    });
 
-        expect(context.getOutputs()).toEqual({
-            server: serverUrl,
-            access_token: accessToken,
-        });
+    expect(context.getOutputs()).toEqual({
+        server: serverUrl,
+        access_token: accessToken,
+    });
 
-        expect(context.getSecrets()).toEqual([accessToken]);
-    } finally {
-        server.close();
-    }
+    expect(context.getSecrets()).toEqual([accessToken]);
 });
 
 test("Error from OIDC configuration endpoint returns error", async () => {
@@ -84,27 +86,24 @@ test("Error from OIDC configuration endpoint returns error", async () => {
     context.addInput("server", serverUrl);
     context.addInput("service_account_id", serviceAccountId);
 
-    const server = setupServer(
-        rest.get("https://my.octopus.app/.well-known/openid-configuration", (_req, res, ctx) => {
-            return res(
-                ctx.status(400),
-                ctx.json<OctopusErrorResponse>({
-                    ErrorMessage: "This is the error",
-                    Errors: ["This is the error"],
-                })
-            );
-        })
-    );
-
-    server.listen();
+    mockFetch.mockImplementation((url) => {
+        if (url === `${serverUrl}/.well-known/openid-configuration`) {
+            return Promise.resolve({
+                ok: false,
+                status: 400,
+                json: async () =>
+                    ({
+                        ErrorMessage: "This is the error",
+                        Errors: ["This is the error"],
+                    }) as OctopusErrorResponse,
+            } as any);
+        }
+        return Promise.reject(new Error(`Unexpected fetch call to ${url}`));
+    });
 
     context.setIDToken(async () => "id-token-from-github");
 
-    try {
-        await expect(() => login(context)).rejects.toThrow(new Error("This is the error"));
-    } finally {
-        server.close();
-    }
+    await expect(() => login(context)).rejects.toThrow(new Error("This is the error"));
 });
 
 test("When token exchange request from Server returns error response in Octopus format, login returns the error correctly", async () => {
@@ -115,35 +114,34 @@ test("When token exchange request from Server returns error response in Octopus 
     context.addInput("service_account_id", serviceAccountId);
     const error = "This is the error in the Octopus format";
 
-    const server = setupServer(
-        rest.get("https://my.octopus.app/.well-known/openid-configuration", (_req, res, ctx) => {
-            return res(
-                ctx.json<OpenIdConfiguration>({
-                    issuer: "https://my.octopus.app",
-                    token_endpoint: "https://my.octopus.app/token/v1",
-                })
-            );
-        }),
-        rest.post("https://my.octopus.app/token/v1", (_req, res, ctx) => {
-            return res(
-                ctx.status(400),
-                ctx.json<OctopusErrorResponse>({
-                    ErrorMessage: error,
-                    Errors: [error],
-                })
-            );
-        })
-    );
-
-    server.listen();
+    mockFetch.mockImplementation((url) => {
+        if (url === `${serverUrl}/.well-known/openid-configuration`) {
+            return Promise.resolve({
+                ok: true,
+                json: async () =>
+                    ({
+                        issuer: serverUrl,
+                        token_endpoint: `${serverUrl}/token/v1`,
+                    }) as OpenIdConfiguration,
+            } as any);
+        }
+        if (url === `${serverUrl}/token/v1`) {
+            return Promise.resolve({
+                ok: false,
+                status: 400,
+                json: async () =>
+                    ({
+                        ErrorMessage: error,
+                        Errors: [error],
+                    }) as OctopusErrorResponse,
+            } as any);
+        }
+        return Promise.reject(new Error(`Unexpected fetch call to ${url}`));
+    });
 
     context.setIDToken(async () => "id-token-from-github");
 
-    try {
-        await expect(() => login(context)).rejects.toThrow(new Error(error));
-    } finally {
-        server.close();
-    }
+    await expect(() => login(context)).rejects.toThrow(new Error(error));
 });
 
 test("When token exchange request from Server returns error response in rfc8693 format, login returns the error correctly", async () => {
@@ -154,35 +152,34 @@ test("When token exchange request from Server returns error response in rfc8693 
     context.addInput("service_account_id", serviceAccountId);
     const error = "This is the error in the rfc8693 spec format";
 
-    const server = setupServer(
-        rest.get("https://my.octopus.app/.well-known/openid-configuration", (_req, res, ctx) => {
-            return res(
-                ctx.json<OpenIdConfiguration>({
-                    issuer: "https://my.octopus.app",
-                    token_endpoint: "https://my.octopus.app/token/v1",
-                })
-            );
-        }),
-        rest.post("https://my.octopus.app/token/v1", (_req, res, ctx) => {
-            return res(
-                ctx.status(400),
-                ctx.json<ExchangeOidcTokenErrorResponse>({
-                    error: "invalid_request",
-                    error_description: error,
-                })
-            );
-        })
-    );
-
-    server.listen();
+    mockFetch.mockImplementation((url) => {
+        if (url === `${serverUrl}/.well-known/openid-configuration`) {
+            return Promise.resolve({
+                ok: true,
+                json: async () =>
+                    ({
+                        issuer: serverUrl,
+                        token_endpoint: `${serverUrl}/token/v1`,
+                    }) as OpenIdConfiguration,
+            } as any);
+        }
+        if (url === `${serverUrl}/token/v1`) {
+            return Promise.resolve({
+                ok: false,
+                status: 400,
+                json: async () =>
+                    ({
+                        error: "invalid_request",
+                        error_description: error,
+                    }) as ExchangeOidcTokenErrorResponse,
+            } as any);
+        }
+        return Promise.reject(new Error(`Unexpected fetch call to ${url}`));
+    });
 
     context.setIDToken(async () => "id-token-from-github");
 
-    try {
-        await expect(() => login(context)).rejects.toThrow(new Error(error));
-    } finally {
-        server.close();
-    }
+    await expect(() => login(context)).rejects.toThrow(new Error(error));
 });
 
 test("When server input is not supplied an error is returned", async () => {
@@ -217,30 +214,9 @@ test("When ID token cannot be obtained from GitHub an error is returned", async 
     context.addInput("server", serverUrl);
     context.addInput("service_account_id", serviceAccountId);
 
-    const accessToken = "an-access-token-that-is-valid-woohoo";
-
-    const server = setupServer(
-        rest.post("https://my.octopus.app/token/v1", (_req, res, ctx) => {
-            return res(
-                ctx.json<ExchangeOidcTokenResponse>({
-                    access_token: accessToken,
-                    expires_in: "300",
-                    issued_token_type: "jwt",
-                    token_type: "Bearer",
-                })
-            );
-        })
-    );
-
-    server.listen();
-
     context.setIDToken(async () => {
         throw new Error("Could not get ID token from GitHub");
     });
 
-    try {
-        await expect(() => login(context)).rejects.toThrow("Could not get ID token from GitHub");
-    } finally {
-        server.close();
-    }
+    await expect(() => login(context)).rejects.toThrow("Could not get ID token from GitHub");
 });

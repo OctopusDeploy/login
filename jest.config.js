@@ -1,21 +1,15 @@
 module.exports = {
-    preset: "ts-jest/presets/js-with-ts",
-    globals: {
-        "ts-jest": {
-            tsConfig: "<rootDir>/jest.tsconfig.json",
-        },
-    },
-    projects: [
-        {
-            displayName: "test",
-            transform: {
-                ".(ts|js)": "ts-jest",
+    preset: "ts-jest",
+    testEnvironment: "node",
+    setupFilesAfterEnv: ["jest-expect-message", "jest-extended"],
+    testMatch: ["**/__tests__/**/*.spec.ts"],
+    resetMocks: true,
+    transform: {
+        "^.+\\.ts$": [
+            "ts-jest",
+            {
+                tsconfig: "<rootDir>/jest.tsconfig.json",
             },
-            testRegex: "__tests__/.*\\.(test|spec)\\.(ts)$",
-            moduleDirectories: ["<rootDir>/src/", "<rootDir>/node_modules"],
-            moduleFileExtensions: ["ts", "js"],
-            setupFilesAfterEnv: ["jest-expect-message", "jest-extended"],
-            resetMocks: true,
-        },
-    ],
+        ],
+    },
 };

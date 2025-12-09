@@ -1,5 +1,0 @@
-node_modules/*
-**/package.json
-**/dist/**/*
-**/coverage/*
-renovate-config.js
