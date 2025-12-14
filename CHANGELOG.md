@@ -1,5 +1,16 @@
 # octopusdeploy/login
 
+## [2.0.0](https://github.com/OctopusDeploy/login/compare/v1.0.3...v2.0.0) (2025-12-14)
+
+
+### ⚠ BREAKING CHANGES
+
+* Update Node to Node 24 ([#309](https://github.com/OctopusDeploy/login/issues/309))
+
+### Features
+
+* Update Node to Node 24 ([#309](https://github.com/OctopusDeploy/login/issues/309)) ([a61fa35](https://github.com/OctopusDeploy/login/commit/a61fa356b5d9cfd6e27b2ddeeb960d0d305da323))
+
 ## [1.0.3](https://github.com/OctopusDeploy/login/compare/v1.0.2...v1.0.3) (2025-03-12)
 
 
