@@ -49,12 +49,14 @@ jobs:
       id-token: write # This is required to obtain an ID token from GitHub Actions for the job
     steps:
       - name: Login to Octopus
+        id: login_to_octopus
         uses: OctopusDeploy/login@v1
         with:
           server: https://my.octopus.app
           service_account_id: 5be4ac10-2679-4041-a8b0-7b05b445e19e
 
       - name: Create a release in Octopus
+        id: create_a_release_in_octopus
         uses: OctopusDeploy/create-release-action@v3
         with:
           space: Default
@@ -105,12 +107,14 @@ jobs:
     name: Create a release in Octopus
     steps:
       - name: Login to Octopus
+        id: login_to_octopus
         uses: OctopusDeploy/login@v1
         with:
           server: https://my.octopus.app
           api_key: ${{ secrets.OCTOPUS_API_KEY }}
 
       - name: Create a release in Octopus
+        id: create_a_release_in_octopus
         uses: OctopusDeploy/create-release-action@v3
         with:
           space: Default
