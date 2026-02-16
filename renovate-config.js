@@ -24,6 +24,7 @@ module.exports = {
     onboarding: false,
     requireConfig: false,
     allowedPostUpgradeCommands: [".*"],
+    allowShellExecutorForPostUpgradeCommands: true,
     postUpgradeTasks: {
         commands: ["npm install && npm run build"],
         fileFilters: ["**/index.js"],
