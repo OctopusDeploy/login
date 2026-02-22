@@ -27,7 +27,7 @@
   "homepage": "https://github.com/OctopusDeploy/login#readme",
   "devDependencies": {
     "@eslint/eslintrc": "3.3.3",
-    "@eslint/js": "9.39.2",
+    "@eslint/js": "9.39.3",
     "@types/jest": "29.5.14",
     "@types/node": "24.7.2",
     "@types/node-fetch": "2.6.13",
@@ -35,7 +35,7 @@
     "@typescript-eslint/parser": "8.56.0",
     "@typescript-eslint/utils": "8.56.0",
     "esbuild": "0.25.12",
-    "eslint": "9.39.2",
+    "eslint": "9.39.3",
     "eslint-config-prettier": "10.1.8",
     "eslint-plugin-import": "2.32.0",
     "eslint-plugin-jest": "29.15.0",
