@@ -15,7 +15,7 @@ jobs:
       contents: write # Needed to tag repo and create releases
       pull-requests: write # Needed to add comments to pull requests on release
     steps:
-      - uses: google-github-actions/release-please-action@v3
+      - uses: googleapis/release-please-action@v3
         id: release
         with:
           package-name: ${{env.ACTION_NAME}}
@@ -48,7 +48,7 @@ jobs:
       - release-please-release
     steps:
       - id: release-pr
-        uses: google-github-actions/release-please-action@v3
+        uses: googleapis/release-please-action@v3
         with:
           token: ${{ secrets.CHANGESETS_GITHUB_TOKEN }}
           release-type: node
