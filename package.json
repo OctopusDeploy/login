@@ -51,7 +51,7 @@
     "typescript": "5.9.3"
   },
   "dependencies": {
-    "@actions/core": "^3.0.0",
+    "@actions/core": "3.0.0",
     "node-fetch": "2.7.0"
   },
   "engines": {
