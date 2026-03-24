@@ -2,8 +2,7 @@
   "compilerOptions": {
     "module": "CommonJS",
     "moduleResolution": "node",
-    "target": "ES6",
-    "sourceMap": true,
+    "target": "ES2022",
     "alwaysStrict": true,
     "noImplicitAny": true,
     "removeComments": true,
@@ -17,9 +16,9 @@
     "noUnusedParameters": true,
     "esModuleInterop": true,
     "isolatedModules": true,
-    "outDir": "dist",
     "baseUrl": "src",
-    "lib": ["ES2021"]
+    "lib": ["ES2022"],
+    "noEmit": true
   },
   "include": ["src/**/*"],
   "exclude": ["node_modules", "dist"]
