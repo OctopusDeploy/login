@@ -4,11 +4,12 @@
   "description": "GitHub action to login to your Octopus Server",
   "main": "src/index.ts",
   "scripts": {
-    "build": "esbuild src/index.ts --bundle --platform=node --target=node24 --minify --outdir=./dist",
+    "build": "esbuild src/index.ts --bundle --platform=node --target=node24 --minify --outfile=dist/index.js",
     "ci:test": "jest --reporters=jest-junit",
     "lint:fix": "eslint . --fix",
     "lint": "eslint . --no-error-on-unmatched-pattern",
-    "test": "jest"
+    "test": "jest",
+    "typecheck": "tsc --noEmit"
   },
   "repository": {
     "type": "git",
