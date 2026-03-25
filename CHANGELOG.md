@@ -1,5 +1,23 @@
 # octopusdeploy/login
 
+## [2.0.0](https://github.com/OctopusDeploy/login/compare/v1.0.3...v2.0.0) (2026-03-20)
+
+
+### ⚠ BREAKING CHANGES
+
+* Update Node to Node 24 ([#309](https://github.com/OctopusDeploy/login/issues/309))
+
+### Features
+
+* Add workflow to check for conventional commit format PR title ([#315](https://github.com/OctopusDeploy/login/issues/315)) ([36e5ae2](https://github.com/OctopusDeploy/login/commit/36e5ae20c02f120f8a9507e4ffc00042b3b64109))
+* Update Node to Node 24 ([#309](https://github.com/OctopusDeploy/login/issues/309)) ([a61fa35](https://github.com/OctopusDeploy/login/commit/a61fa356b5d9cfd6e27b2ddeeb960d0d305da323))
+
+
+### Bug Fixes
+
+* **deps:** pin dependency @actions/core to 3.0.0 ([#349](https://github.com/OctopusDeploy/login/issues/349)) ([daefc60](https://github.com/OctopusDeploy/login/commit/daefc608b63a3221fcece56cacf772ebd0a1c289))
+* **deps:** upgrade @actions/core from v1 to v3 ([#347](https://github.com/OctopusDeploy/login/issues/347)) ([64269f1](https://github.com/OctopusDeploy/login/commit/64269f12d35664afe18fc51cae7163dea4dfddf3))
+
 ## [1.0.3](https://github.com/OctopusDeploy/login/compare/v1.0.2...v1.0.3) (2025-03-12)
 
 
