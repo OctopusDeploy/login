@@ -15,7 +15,7 @@ jobs:
       contents: write # Needed to tag repo and create releases
       pull-requests: write # Needed to add comments to pull requests on release
     steps:
-      - uses: google-github-actions/release-please-action@v3
+      - uses: google-github-actions/release-please-action@v3.7.13
         id: release
         with:
           package-name: ${{env.ACTION_NAME}}
@@ -23,12 +23,12 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           command: github-release
 
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v3.6.0
         if: ${{ steps.release.outputs.release_created }}
 
       - name: Tag minor version
         if: ${{ steps.release.outputs.release_created }}
-        uses: richardsimko/update-tag@v1
+        uses: richardsimko/update-tag@v1.1.6
         with:
           tag_name: v${{ steps.release.outputs.major }}.${{ steps.release.outputs.minor }}
         env:
@@ -36,7 +36,7 @@ jobs:
 
       - name: Tag major version
         if: ${{ steps.release.outputs.release_created }}
-        uses: richardsimko/update-tag@v1
+        uses: richardsimko/update-tag@v1.1.6
         with:
           tag_name: v${{ steps.release.outputs.major }}
         env:
@@ -48,7 +48,7 @@ jobs:
       - release-please-release
     steps:
       - id: release-pr
-        uses: google-github-actions/release-please-action@v3
+        uses: google-github-actions/release-please-action@v3.7.13
         with:
           token: ${{ secrets.CHANGESETS_GITHUB_TOKEN }}
           release-type: node
