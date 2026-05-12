@@ -50,7 +50,7 @@ jobs:
     steps:
       - name: Login to Octopus
         id: login_to_octopus
-        uses: OctopusDeploy/login@v1
+        uses: OctopusDeploy/login@v2
         with:
           server: https://my.octopus.app
           service_account_id: 5be4ac10-2679-4041-a8b0-7b05b445e19e
@@ -108,7 +108,7 @@ jobs:
     steps:
       - name: Login to Octopus
         id: login_to_octopus
-        uses: OctopusDeploy/login@v1
+        uses: OctopusDeploy/login@v2
         with:
           server: https://my.octopus.app
           api_key: ${{ secrets.OCTOPUS_API_KEY }}
