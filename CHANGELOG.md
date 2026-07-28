@@ -1,5 +1,15 @@
 # octopusdeploy/login
 
+## [2.0.1](https://github.com/OctopusDeploy/login/compare/v2.0.0...v2.0.1) (2026-07-28)
+
+
+### Bug Fixes
+
+* **deps:** bump brace-expansion to resolve DoS advisory ([#387](https://github.com/OctopusDeploy/login/issues/387)) ([8ed196c](https://github.com/OctopusDeploy/login/commit/8ed196c3bd58bd2f0d0df147357316e4147dc65a))
+* **deps:** bump undici from 6.24.1 to 6.27.0 ([#385](https://github.com/OctopusDeploy/login/issues/385)) ([f1d8149](https://github.com/OctopusDeploy/login/commit/f1d8149e80ae508911932957a39846d727d5157c))
+* **deps:** resolve new brace-expansion and js-yaml advisories ([#389](https://github.com/OctopusDeploy/login/issues/389)) ([3a96e90](https://github.com/OctopusDeploy/login/commit/3a96e903ee6770098b13e82d1882bc9585fb1f1e))
+* **deps:** resolve remaining npm audit advisories ([#388](https://github.com/OctopusDeploy/login/issues/388)) ([eb91fe6](https://github.com/OctopusDeploy/login/commit/eb91fe6cc8e64338b55a61793b2b7c49b9ca0795))
+
 ## [2.0.0](https://github.com/OctopusDeploy/login/compare/v1.0.3...v2.0.0) (2026-03-20)
 
 
