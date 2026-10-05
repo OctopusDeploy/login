@@ -1,5 +1,12 @@
 # octopusdeploy/login
 
+## [2.0.2](https://github.com/OctopusDeploy/login/compare/v2.0.1...v2.0.2) (2026-10-05)
+
+
+### Bug Fixes
+
+* **deps:** resolve npm audit advisories ([#397](https://github.com/OctopusDeploy/login/issues/397)) ([0ffad8b](https://github.com/OctopusDeploy/login/commit/0ffad8b65b8ed66a839ee8cf6e413084a4b1da1a))
+
 ## [2.0.1](https://github.com/OctopusDeploy/login/compare/v2.0.0...v2.0.1) (2026-09-09)
 
 
