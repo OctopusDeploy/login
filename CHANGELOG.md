@@ -1,5 +1,12 @@
 # octopusdeploy/login
 
+## [2.0.3](https://github.com/OctopusDeploy/login/compare/v2.0.2...v2.0.3) (2026-10-29)
+
+
+### Bug Fixes
+
+* **deps:** bump undici from 6.29.0 to 6.29.1 ([#404](https://github.com/OctopusDeploy/login/issues/404)) ([6904a04](https://github.com/OctopusDeploy/login/commit/6904a04b89465b21def05d8566a768b31e077b7c))
+
 ## [2.0.2](https://github.com/OctopusDeploy/login/compare/v2.0.1...v2.0.2) (2026-10-05)
 
 
