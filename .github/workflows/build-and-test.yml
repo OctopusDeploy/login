@@ -74,7 +74,7 @@ jobs:
       SERVER_URL: "http://localhost:8080"
     services:
       sqlserver:
-        image: mcr.microsoft.com/mssql/server:2019-CU27-ubuntu-20.04
+        image: mcr.microsoft.com/mssql/server:2019-CU27-ubuntu-20.04@sha256:fdd59b5c286899100531cd9f23ad74a8cb75df335513924a8de59964ef9b38d5
         env:
           ACCEPT_EULA: Y
           SA_PASSWORD: ${{ env.SA_PASSWORD }}
